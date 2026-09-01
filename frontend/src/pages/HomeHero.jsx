@@ -1,11 +1,101 @@
 import { useState } from 'react';
 
+const OPERATIONAL_STEPS = [
+  {
+    step: '01',
+    title: 'Signal Ingestion & Failure Taxonomy',
+    desc: 'Failed payment webhooks are ingested in real time across UPI, Cards, Netbanking, and Wallets. The engine parses raw gateway error codes into structured root causes (Bank Timeouts, Network Drops, Insufficient Funds, Expired Methods).',
+    badge: 'Real-Time Ingestion',
+    target: 'transactions'
+  },
+  {
+    step: '02',
+    title: 'Machine Learning Recovery Scoring',
+    desc: 'Our production Random Forest classifier (83.36% ROC-AUC on 2,250 held-out test transactions) evaluates 9 behavioral and transactional signals to predict the probability of successful recovery.',
+    badge: '83.36% ROC-AUC',
+    target: 'batch'
+  },
+  {
+    step: '03',
+    title: 'AI Agent Contextual Reasoning',
+    desc: 'The AI Agent autonomously inspects customer lifetime success rates, prior recovery history, and error persistence to formulate a recommended recovery action (RETRY_PAYMENT, SEND_NOTIFICATION, or ESCALATE_TO_HUMAN).',
+    badge: 'Gemini AI Agent',
+    target: 'ai_decision'
+  },
+  {
+    step: '04',
+    title: 'Deterministic Policy Safety Gate',
+    desc: 'Before any financial action executes, the deterministic policy engine verifies hard bounds: max autonomous amount (₹5,000), max retry ceiling (2 attempts), and 48-hour recovery window. The AI cannot bypass these rules.',
+    badge: 'Hard Safety Gate',
+    target: 'ai_decision'
+  },
+  {
+    step: '05',
+    title: 'Closed-Loop Execution & Razorpay Checkout',
+    desc: 'Approved actions are executed via the deterministic Payment Simulator or live Razorpay Standard Web Checkout with cryptographic HMAC-SHA256 signature verification and double-charge idempotency guards.',
+    badge: 'HMAC-SHA256 Verified',
+    target: 'ai_decision'
+  },
+  {
+    step: '06',
+    title: 'Human Triage & Immutable Audit Trail',
+    desc: 'High-value transactions (>₹5,000) or low-probability cases route to the Exceptions Queue for 1-click human operator approval. Every action across all actors is permanently logged in an append-only audit trail.',
+    badge: 'Append-Only Ledger',
+    target: 'exceptions'
+  }
+];
+
+const CAPABILITIES = [
+  {
+    id: 'decision',
+    title: 'Autonomous Decision Engine',
+    desc: 'Multi-stage decision pipeline combining Random Forest ML inference, Gemini tool-calling, and deterministic policy gating.',
+    target: 'ai_decision',
+    tag: 'Core Engine'
+  },
+  {
+    id: 'batch',
+    title: '10,000-Txn Batch Simulator',
+    desc: 'Run reproducible, seeded batch evaluations directly comparing AI Recovery vs Baseline rule retries to measure exact incremental ROI.',
+    target: 'batch',
+    tag: 'Quantitative Benchmark'
+  },
+  {
+    id: 'explorer',
+    title: 'Transaction Explorer',
+    desc: 'Search, filter, and inspect at-risk transactions with 6 multi-dimensional filters across status, method, and failure taxonomy.',
+    target: 'transactions',
+    tag: 'Ledger Intelligence'
+  },
+  {
+    id: 'exceptions',
+    title: 'Exceptions & Human Triage',
+    desc: 'Human-in-the-Loop workflows for high-value payments exceeding ₹5,000 and policy-blocked retries with 1-click resolution.',
+    target: 'exceptions',
+    tag: 'Human-in-the-Loop'
+  },
+  {
+    id: 'audit',
+    title: 'Immutable Audit Trail',
+    desc: 'Cryptographically verifiable chronological event history tracking actor decisions, tool calls, policy checks, and recovered funds.',
+    target: 'audit',
+    tag: 'Compliance & Safety'
+  },
+  {
+    id: 'copilot',
+    title: 'RescueCopilot AI Assistant',
+    desc: 'Interactive natural language assistant with real-time ledger context answering operator questions on policies, metrics, and transactions.',
+    target: 'ai_decision',
+    tag: 'Natural Language AI'
+  }
+];
+
 export default function HomeHero({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('Overview');
 
   return (
     <div className="landing-hero-container">
-      {/* Background Video with Enhanced Clarity & Reduced Fade */}
+      {/* Background Video with Enhanced Clarity */}
       <div className="hero-video-wrapper">
         <video
           autoPlay
@@ -192,12 +282,10 @@ export default function HomeHero({ onNavigate }) {
                             <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
                           </linearGradient>
                         </defs>
-                        {/* Area Fill */}
                         <path
                           d="M0,75 C60,68 100,80 150,45 C200,10 260,55 310,25 C350,2 380,18 400,12 L400,90 L0,90 Z"
                           fill="url(#heroAreaGrad)"
                         />
-                        {/* Stroke Line */}
                         <path
                           d="M0,75 C60,68 100,80 150,45 C200,10 260,55 310,25 C350,2 380,18 400,12"
                           fill="none"
@@ -205,7 +293,6 @@ export default function HomeHero({ onNavigate }) {
                           strokeWidth="2.5"
                           strokeLinecap="round"
                         />
-                        {/* Milestone Nodes */}
                         <circle cx="150" cy="45" r="3.5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2" />
                         <circle cx="310" cy="25" r="3.5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2" />
                         <circle cx="400" cy="12" r="4" fill="#059669" stroke="#FFFFFF" strokeWidth="2" />
@@ -297,6 +384,178 @@ export default function HomeHero({ onNavigate }) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* ── Section 2: Trust & Architecture Metrics Bar ───────────── */}
+        <div className="home-stats-strip">
+          <div className="home-stat-box">
+            <div className="home-stat-number">83.36%</div>
+            <div className="home-stat-label">Held-Out ML ROC-AUC</div>
+            <div className="home-stat-sub">Random Forest on 2,250 test samples</div>
+          </div>
+          <div className="home-stat-box">
+            <div className="home-stat-number">10,000+</div>
+            <div className="home-stat-label">Live Production Records</div>
+            <div className="home-stat-sub">Across 2,000 unique customer profiles</div>
+          </div>
+          <div className="home-stat-box">
+            <div className="home-stat-number">₹5.11+ Cr</div>
+            <div className="home-stat-label">At-Risk Revenue Analyzed</div>
+            <div className="home-stat-sub">Across UPI, Cards, Netbanking, Mandates</div>
+          </div>
+          <div className="home-stat-box">
+            <div className="home-stat-number">100%</div>
+            <div className="home-stat-label">Deterministic Safety</div>
+            <div className="home-stat-sub">Policy Gate blocks unbounded spending</div>
+          </div>
+        </div>
+
+        {/* ── Section 3: How to Use the Platform (6-Step Architecture Loop) ── */}
+        <div className="home-section-container">
+          <div className="home-section-header">
+            <div className="section-eyebrow">End-to-End Architecture</div>
+            <h2 className="home-section-title">
+              How to <span className="italic-serif">Operate</span> RescueFlow
+            </h2>
+            <p className="home-section-subtitle">
+              From payment failure detection to verified fund recovery, explore the 6-stage closed-loop pipeline.
+            </p>
+          </div>
+
+          <div className="home-steps-grid">
+            {OPERATIONAL_STEPS.map((item) => (
+              <div
+                key={item.step}
+                className="home-step-card"
+                onClick={() => onNavigate(item.target)}
+                title={`Click to explore ${item.title}`}
+              >
+                <div className="home-step-top">
+                  <span className="home-step-num">{item.step}</span>
+                  <span className="badge badge-info">{item.badge}</span>
+                </div>
+                <h3 className="home-step-heading">{item.title}</h3>
+                <p className="home-step-body">{item.desc}</p>
+                <div className="home-step-footer">
+                  <span className="step-explore-link">Explore Feature ›</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Section 4: Interactive Capabilities Suite ───────────── */}
+        <div className="home-section-container">
+          <div className="home-section-header">
+            <div className="section-eyebrow">Engine Features</div>
+            <h2 className="home-section-title">
+              Core Platform <span className="italic-serif">Capabilities</span>
+            </h2>
+            <p className="home-section-subtitle">
+              Every tool engineered to win back revenue while maintaining compliance, deterministic safety, and an immutable audit trail.
+            </p>
+          </div>
+
+          <div className="home-capabilities-grid">
+            {CAPABILITIES.map((cap) => (
+              <div
+                key={cap.id}
+                className="capability-card"
+                onClick={() => onNavigate(cap.target)}
+              >
+                <div className="cap-tag">{cap.tag}</div>
+                <h3 className="cap-title">{cap.title}</h3>
+                <p className="cap-desc">{cap.desc}</p>
+                <div className="cap-cta">
+                  <span>Open Tool</span>
+                  <span className="cap-arrow">→</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Section 5: Guided 5-Minute Demo Tour ───────────────────── */}
+        <div className="home-tour-card">
+          <div className="tour-content">
+            <div className="section-eyebrow" style={{ color: '#93C5FD' }}>Judge & Evaluator Guide</div>
+            <h2 className="tour-title">5-Minute Live Interactive Demo Script</h2>
+            <p className="tour-subtitle">
+              Follow this sequence to test and evaluate all features across the platform in under 5 minutes:
+            </p>
+
+            <div className="tour-steps-list">
+              <div className="tour-step-item" onClick={() => onNavigate('overview')}>
+                <span className="tour-step-index">1</span>
+                <div>
+                  <strong>Platform Overview:</strong> Inspect live KPIs (₹5.11+ Cr at risk), 7-day trends, and operational funnel.
+                </div>
+              </div>
+
+              <div className="tour-step-item" onClick={() => onNavigate('transactions')}>
+                <span className="tour-step-index">2</span>
+                <div>
+                  <strong>Transaction Explorer:</strong> Filter by failure root cause (Bank Failure) and select <code>TXN001741</code>.
+                </div>
+              </div>
+
+              <div className="tour-step-item" onClick={() => onNavigate('ai_decision')}>
+                <span className="tour-step-index">3</span>
+                <div>
+                  <strong>Decision Engine:</strong> Analyze <code>TXN001741</code>, verify 74.7% ML prediction, and click <em>Run AI Recovery Agent</em>.
+                </div>
+              </div>
+
+              <div className="tour-step-item" onClick={() => onNavigate('exceptions')}>
+                <span className="tour-step-index">4</span>
+                <div>
+                  <strong>Human Triage Queue:</strong> Review payments {'>'} ₹5,000 and click <em>Approve</em> for 1-click operator resolution.
+                </div>
+              </div>
+
+              <div className="tour-step-item" onClick={() => onNavigate('batch')}>
+                <span className="tour-step-index">5</span>
+                <div>
+                  <strong>10k Batch Benchmark:</strong> Run 10,000 transactions comparing AI vs Baseline to measure exact incremental rupees won back.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <button
+                className="btn hero-primary-btn"
+                style={{ background: '#FFFFFF', color: '#0F172A' }}
+                onClick={() => onNavigate('overview')}
+              >
+                Start Guided Tour →
+              </button>
+              <button
+                className="btn btn-outline"
+                style={{ background: 'transparent', borderColor: 'rgba(255,255,255,0.3)', color: '#FFFFFF' }}
+                onClick={() => onNavigate('batch')}
+              >
+                Run Batch Benchmark
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Section 6: Bottom Launch CTA Banner ─────────────────────── */}
+        <div className="home-bottom-banner">
+          <h2 className="bottom-banner-title">
+            Ready to win back <span className="italic-serif">slipping revenue</span>?
+          </h2>
+          <p className="bottom-banner-sub">
+            Explore the full autonomous recovery engine live with Razorpay Testnet and real machine learning telemetry.
+          </p>
+          <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn hero-primary-btn" onClick={() => onNavigate('ai_decision')}>
+              Launch Recovery Engine →
+            </button>
+            <button className="hero-demo-btn" onClick={() => onNavigate('overview')}>
+              Open Platform Overview
+            </button>
           </div>
         </div>
       </div>

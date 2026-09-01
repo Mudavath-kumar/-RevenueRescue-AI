@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { getExceptions } from '../api';
 
 const NAV_TABS = [
-  { id: 'home',         label: 'Home', icon: '✦' },
-  { id: 'overview',     label: 'Overview', icon: '📊' },
-  { id: 'transactions', label: 'Transactions', icon: '💳' },
-  { id: 'ai_decision',  label: 'Decision Engine', icon: '⚡' },
-  { id: 'audit',        label: 'Audit Trail', icon: '📋' },
-  { id: 'exceptions',   label: 'Exceptions', icon: '⚠️' },
-  { id: 'batch',        label: 'Batch Simulator', icon: '🧪' },
+  { id: 'home',         label: 'Home' },
+  { id: 'overview',     label: 'Overview' },
+  { id: 'transactions', label: 'Transactions' },
+  { id: 'ai_decision',  label: 'Decision Engine' },
+  { id: 'audit',        label: 'Audit Trail' },
+  { id: 'exceptions',   label: 'Exceptions' },
+  { id: 'batch',        label: 'Batch Simulator' },
 ];
 
 export default function HeaderNav({ activePage, onNavigate }) {
@@ -76,7 +76,6 @@ export default function HeaderNav({ activePage, onNavigate }) {
                 className={`nav-pill-btn ${isActive ? 'active' : ''}`}
                 onClick={() => handleNavClick(tab.id)}
               >
-                <span className="nav-tab-icon">{tab.icon}</span>
                 <span>{tab.label}</span>
                 {tab.id === 'exceptions' && exceptionCount > 0 && (
                   <span className="nav-alert-pill">{exceptionCount}</span>
@@ -97,7 +96,7 @@ export default function HeaderNav({ activePage, onNavigate }) {
             className="btn btn-primary btn-sm nav-cta-btn"
             onClick={() => onNavigate('ai_decision')}
           >
-            Launch App
+            Launch Engine
           </button>
 
           {/* Mobile Hamburger Toggle Button */}
@@ -123,7 +122,7 @@ export default function HeaderNav({ activePage, onNavigate }) {
                   className={`mobile-nav-item ${isActive ? 'active' : ''}`}
                   onClick={() => handleNavClick(tab.id)}
                 >
-                  <span className="mobile-nav-icon">{tab.icon}</span>
+                  <span className="mobile-nav-glyph">◆</span>
                   <span className="mobile-nav-label">{tab.label}</span>
                   {tab.id === 'exceptions' && exceptionCount > 0 && (
                     <span className="nav-alert-pill">{exceptionCount}</span>

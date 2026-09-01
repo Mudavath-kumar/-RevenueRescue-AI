@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { askCopilot } from '../api';
 
 const QUICK_PROMPTS = [
-  '🛡️ Explain policy safety rules',
-  '📊 Summarize revenue recovery stats',
-  '⚠️ Why are payments escalated?',
-  '💡 UPI payment recovery tactics'
+  'Explain policy safety rules',
+  'Summarize revenue recovery stats',
+  'Why are payments escalated?',
+  'UPI payment recovery tactics'
 ];
 
 export default function RescueCopilot({ selectedTxnId, onNavigate }) {
@@ -16,7 +16,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
     {
       id: 'welcome',
       sender: 'bot',
-      text: "👋 Hi! I'm **RescueCopilot**, your autonomous FinTech recovery AI. Ask me about any transaction, ML recovery probability, or policy gate rules!",
+      text: "Hello! I am **RescueCopilot**, your autonomous FinTech recovery AI. Ask me about any transaction, ML recovery probability, or policy gate rules.",
       actions: []
     }
   ]);
@@ -65,7 +65,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
         {
           id: `bot-${Date.now()}`,
           sender: 'bot',
-          text: "⚠️ I couldn't connect to the Copilot service right now. Please verify your backend server connection."
+          text: "Notice: Unable to reach the Copilot service right now. Please verify backend server connectivity."
         }
       ]);
     } finally {
@@ -89,7 +89,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
         title="Open RescueCopilot AI Assistant"
         aria-label="Open RescueCopilot AI Assistant"
       >
-        <span className="copilot-btn-icon">✨</span>
+        <span className="copilot-btn-glyph">✦</span>
         <span className="copilot-btn-label">AI Copilot</span>
         <span className="copilot-btn-dot" />
       </button>
@@ -108,11 +108,11 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
           {/* Header */}
           <div className="copilot-header">
             <div className="copilot-header-left">
-              <div className="copilot-avatar">✨</div>
+              <div className="copilot-avatar">✦</div>
               <div>
                 <div className="copilot-title">RescueCopilot AI</div>
                 <div className="copilot-status">
-                  <span className="pulse-dot" /> Autonomous Intelligence
+                  <span className="pulse-dot" /> Active Intelligence
                 </div>
               </div>
             </div>
@@ -128,13 +128,13 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
           {/* Context Banner if transaction selected */}
           {selectedTxnId && (
             <div className="copilot-context-banner">
-              <span>🎯 Context: <code>{selectedTxnId}</code></span>
+              <span>Context: <code className="mono">{selectedTxnId}</code></span>
               <button
                 className="btn btn-outline btn-sm"
                 style={{ padding: '2px 8px', fontSize: 10 }}
                 onClick={() => handleSend(`Analyze transaction ${selectedTxnId}`)}
               >
-                Analyze Now
+                Analyze
               </button>
             </div>
           )}
@@ -143,7 +143,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
           <div className="copilot-messages">
             {messages.map(msg => (
               <div key={msg.id} className={`copilot-msg-row ${msg.sender}`}>
-                {msg.sender === 'bot' && <div className="copilot-msg-avatar">🤖</div>}
+                {msg.sender === 'bot' && <div className="copilot-msg-avatar">✦</div>}
                 <div className={`copilot-msg-bubble ${msg.sender}`}>
                   <div
                     className="copilot-msg-text"
@@ -160,7 +160,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
                           style={{ fontSize: 11, padding: '4px 10px', marginTop: 6 }}
                           onClick={() => handleActionClick(act)}
                         >
-                          🔍 {act.label}
+                          Inspect {act.txnId}
                         </button>
                       ))}
                     </div>
@@ -170,7 +170,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
             ))}
             {loading && (
               <div className="copilot-msg-row bot">
-                <div className="copilot-msg-avatar">🤖</div>
+                <div className="copilot-msg-avatar">✦</div>
                 <div className="copilot-msg-bubble bot typing">
                   <div className="spinner" style={{ width: 14, height: 14 }} />
                   <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Synthesizing ledger insights...</span>
@@ -186,7 +186,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
               <button
                 key={i}
                 className="copilot-prompt-chip"
-                onClick={() => handleSend(qp.replace(/^[^\s]+\s/, ''))}
+                onClick={() => handleSend(qp)}
                 disabled={loading}
               >
                 {qp}
@@ -228,7 +228,7 @@ function formatMarkdown(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`(.*?)`/g, '<code style="background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 4px; font-size: 11px;">$1</code>')
+    .replace(/`(.*?)`/g, '<code style="background: rgba(15,23,42,0.06); padding: 1px 4px; border-radius: 4px; font-size: 11px; font-family: JetBrains Mono, monospace;">$1</code>')
     .replace(/\n\n/g, '<br/><br/>')
     .replace(/\n•/g, '<br/>•')
     .replace(/\n\d\./g, match => '<br/>' + match.trim());

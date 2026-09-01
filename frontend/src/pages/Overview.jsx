@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { getDashboardMetrics } from '../api';
 import { formatINR } from '../components/utils';
 
-const COLORS = ['#2563EB', '#10B981', '#EF4444', '#F59E0B', '#8B5CF6', '#06B6D4', '#F97316'];
+const COLORS = ['#2563EB', '#059669', '#E11D48', '#D97706', '#7C3AED', '#0891B2', '#F97316'];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -19,9 +19,9 @@ const CustomTooltip = ({ active, payload, label }) => {
       fontSize: 12,
       boxShadow: '0 4px 16px rgba(15, 23, 42, 0.08)'
     }}>
-      <p style={{ color: 'var(--text-muted)', marginBottom: 4, fontWeight: 600 }}>{label}</p>
+      <p style={{ color: 'var(--text-muted)', marginBottom: 4, fontWeight: 700 }}>{label}</p>
       {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color, fontWeight: 600 }}>
+        <p key={i} style={{ color: p.color, fontWeight: 700, fontFamily: 'JetBrains Mono, monospace' }}>
           {p.name}: {typeof p.value === 'number' && p.value > 1000 ? formatINR(p.value) : p.value}
         </p>
       ))}
@@ -40,8 +40,8 @@ export default function Overview({ onNavigate }) {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="loader"><div className="spinner" /><span>Loading metrics...</span></div>;
-  if (!metrics) return <div className="empty-state"><div className="icon">⚠️</div><p>Could not load metrics. Is the backend running?</p></div>;
+  if (loading) return <div className="loader"><div className="spinner" /><span>Loading telemetry...</span></div>;
+  if (!metrics) return <div className="empty-state"><p>Could not load metrics. Verify backend server status.</p></div>;
 
   const { summary, funnel, dailyRecovery, failureBreakdown } = metrics;
 
@@ -59,12 +59,6 @@ export default function Overview({ onNavigate }) {
     { label: 'Unresolved Exceptions', value: summary.unresolvedExceptions?.toLocaleString() || '0',  color: 'yellow',sub: `${summary.blockedTransactions} policy blocked` },
   ];
 
-  const funnelData = [
-    { stage: 'At Risk', count: funnel.atRisk },
-    { stage: 'Attempted', count: funnel.attempted },
-    { stage: 'Recovered', count: funnel.recovered }
-  ];
-
   const failureData = (failureBreakdown || []).map(f => ({
     name: f._id?.replace(/_/g, ' '),
     value: f.count
@@ -73,8 +67,8 @@ export default function Overview({ onNavigate }) {
   return (
     <div className="animate-in">
       <div className="page-header">
-        <p>Recovery Intelligence</p>
-        <h2>Platform Overview</h2>
+        <p>Recovery Telemetry</p>
+        <h2>The Platform <span className="italic-serif">Overview</span></h2>
       </div>
 
       {/* Primary Financial KPIs */}
@@ -108,7 +102,7 @@ export default function Overview({ onNavigate }) {
               <AreaChart data={dailyRecovery}>
                 <defs>
                   <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.2} />
+                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.22} />
                     <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
                   </linearGradient>
                 </defs>
@@ -121,7 +115,7 @@ export default function Overview({ onNavigate }) {
             </ResponsiveContainer>
           ) : (
             <div className="empty-state" style={{ padding: 32 }}>
-              <p>Run some recoveries to see the trend</p>
+              <p>Run some recoveries to populate trend data</p>
             </div>
           )}
         </div>
@@ -140,50 +134,23 @@ export default function Overview({ onNavigate }) {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="empty-state" style={{ padding: 32 }}><p>No data yet — seed the database first</p></div>
+            <div className="empty-state" style={{ padding: 32 }}><p>No failure breakdown data available</p></div>
           )}
         </div>
       </div>
 
-      <div className="card-grid card-grid-2">
-        {/* Recovery Funnel */}
-        <div className="card">
-          <div className="section-title">Recovery Funnel</div>
-          <ResponsiveContainer width="100%" height={190}>
-            <BarChart data={funnelData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-              <YAxis dataKey="stage" type="category" tick={{ fill: 'var(--text-muted)', fontSize: 12 }} width={80} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" name="Transactions" radius={[0, 6, 6, 0]}>
-                {funnelData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Quick Launch Banner */}
+      <div className="card" style={{ background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--text-primary)', marginBottom: 2 }}>Ready to test an automated recovery?</div>
+          <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Select any transaction to analyze ML probabilities and policy checks.</div>
         </div>
-
-        {/* Quick Stats */}
-        <div className="card">
-          <div className="section-title">Financial Summary</div>
-          {[
-            ['Total Transactions',     summary.totalTransactions?.toLocaleString()],
-            ['At-Risk Revenue',        formatINR(summary.revenueAtRisk)],
-            ['Gross Recovered',        formatINR(summary.revenueRecovered)],
-            ['Intervention Costs',     formatINR(summary.interventionCost)],
-            ['Net Revenue Recovered',  formatINR(summary.netRecovery)],
-            ['Interventions Attempted',summary.recoveryAttempts?.toLocaleString()],
-          ].map(([label, val]) => (
-            <div key={label} className="stat-row">
-              <span className="stat-label">{label}</span>
-              <span className="stat-value">{val}</span>
-            </div>
-          ))}
-          <button
-            className="btn btn-primary"
-            style={{ marginTop: 16, width: '100%' }}
-            onClick={() => onNavigate('batch')}
-          >
-            Run Batch Evaluation
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn btn-outline btn-sm" onClick={() => onNavigate('transactions')}>
+            Explore Transactions
+          </button>
+          <button className="btn btn-primary btn-sm" onClick={() => onNavigate('ai_decision')}>
+            Open Decision Engine
           </button>
         </div>
       </div>

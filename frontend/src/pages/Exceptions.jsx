@@ -67,37 +67,36 @@ export default function Exceptions({ onNavigate, setSelectedTxnId }) {
             <tbody>
               {items.map(e => (
                 <tr key={e.transactionId}>
-                  <td><code style={{ color: 'var(--accent-blue)', fontSize: 12, fontWeight: 600 }}>{e.transactionId}</code></td>
-                  <td className="muted">{e.customerId}</td>
-                  <td style={{ fontWeight: 700 }}>{formatINR(e.amount)}</td>
+                  <td><code style={{ color: 'var(--accent-blue)', fontSize: 12, fontWeight: 700 }}>{e.transactionId}</code></td>
+                  <td className="muted mono">{e.customerId}</td>
+                  <td style={{ fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>{formatINR(e.amount)}</td>
                   <td><span className="badge badge-info">{e.paymentMethod}</span></td>
-                  <td className="muted" style={{ fontSize: 11 }}>{failureLabel(e.failureReason)}</td>
-                  <td style={{ textAlign: 'center', fontWeight: 600 }}>{e.recoveryAttempts}</td>
+                  <td className="muted" style={{ fontSize: 11.5 }}>{failureLabel(e.failureReason)}</td>
+                  <td style={{ textAlign: 'center', fontWeight: 700 }}>{e.recoveryAttempts}</td>
                   <td><span className={`badge ${statusBadge(e.status)}`}>{e.status}</span></td>
                   <td className="muted" style={{ fontSize: 11 }}>{formatDate(e.createdAt)}</td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: 6 }}>
                       <button
                         className="btn btn-outline btn-sm"
-                        onClick={() => {
-                          setSelectedTxnId(e.transactionId);
-                          onNavigate('ai_decision', e.transactionId);
-                        }}
+                        onClick={() => { setSelectedTxnId(e.transactionId); onNavigate('ai_decision', e.transactionId); }}
+                        title="Inspect in Decision Engine"
                       >
                         Inspect
                       </button>
                       <button
                         className="btn btn-success btn-sm"
-                        disabled={resolvingId === e.transactionId}
                         onClick={() => handleResolve(e.transactionId, 'APPROVE_MANUAL_RETRY')}
+                        disabled={resolvingId === e.transactionId}
+                        title="Approve manual retry"
                       >
                         {resolvingId === e.transactionId ? '...' : 'Approve'}
                       </button>
                       <button
-                        className="btn btn-outline btn-sm"
-                        style={{ color: 'var(--accent-red)' }}
-                        disabled={resolvingId === e.transactionId}
+                        className="btn btn-danger btn-sm"
                         onClick={() => handleResolve(e.transactionId, 'DISMISS')}
+                        disabled={resolvingId === e.transactionId}
+                        title="Dismiss exception"
                       >
                         Dismiss
                       </button>
@@ -112,51 +111,46 @@ export default function Exceptions({ onNavigate, setSelectedTxnId }) {
     </div>
   );
 
-  if (loading) return <div className="loader"><div className="spinner" />Loading exceptions queue...</div>;
-
   return (
     <div className="animate-in">
       <div className="page-header">
-        <p>Human-in-the-Loop</p>
-        <h2>Exceptions Queue</h2>
+        <p>Human-in-the-Loop Operations</p>
+        <h2>Exceptions <span className="italic-serif">& Human Triage</span></h2>
       </div>
 
       {feedback && (
-        <div style={{
-          padding: '10px 16px',
-          marginBottom: 18,
-          borderRadius: 8,
-          background: '#EFF6FF',
-          border: '1px solid #BFDBFE',
-          color: '#1E40AF',
-          fontSize: 13,
-          fontWeight: 500
-        }}>
+        <div style={{ padding: '10px 16px', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)', borderRadius: 8, color: 'var(--accent-blue)', fontSize: 13, fontWeight: 700, marginBottom: 20 }}>
           {feedback}
         </div>
       )}
 
-      <div className="card-grid card-grid-3" style={{ marginBottom: 24 }}>
-        <div className="kpi-card yellow">
-          <div className="kpi-label">Human Escalations</div>
-          <div className="kpi-value yellow">{escalated.length}</div>
-          <div className="kpi-sub">High value / complex failures</div>
-        </div>
-        <div className="kpi-card purple">
-          <div className="kpi-label">Policy Blocked</div>
-          <div className="kpi-value" style={{ color: 'var(--accent-purple)' }}>{blocked.length}</div>
-          <div className="kpi-sub">Max retry or window reached</div>
-        </div>
-        <div className="kpi-card red">
-          <div className="kpi-label">Failed Recoveries</div>
-          <div className="kpi-value red">{failed.length}</div>
-          <div className="kpi-sub">Needs manual intervention</div>
-        </div>
-      </div>
+      {loading ? (
+        <div className="loader"><div className="spinner" /><span>Loading exception queues...</span></div>
+      ) : (
+        <>
+          <div className="card-grid card-grid-3" style={{ marginBottom: 20 }}>
+            <div className="kpi-card yellow">
+              <div className="kpi-label">Human Escalations</div>
+              <div className="kpi-value yellow">{escalated.length}</div>
+              <div className="kpi-sub">High value amounts or ambiguous cases</div>
+            </div>
+            <div className="kpi-card purple">
+              <div className="kpi-label">Policy Blocked</div>
+              <div className="kpi-value purple">{blocked.length}</div>
+              <div className="kpi-sub">Exceeded retry ceiling or window limit</div>
+            </div>
+            <div className="kpi-card red">
+              <div className="kpi-label">Unrecovered Failed</div>
+              <div className="kpi-value red">{failed.length}</div>
+              <div className="kpi-sub">Pending review or manual routing</div>
+            </div>
+          </div>
 
-      <ExceptionTable items={escalated} label="Human Escalations Queue" badge="badge-warning" />
-      <ExceptionTable items={blocked}   label="Policy Blocked Transactions" badge="badge-purple" />
-      <ExceptionTable items={failed}    label="Failed Recovery Attempts" badge="badge-danger" />
+          <ExceptionTable items={escalated} label="Human Escalations Queue" badge="badge-warning" />
+          <ExceptionTable items={blocked}   label="Policy Blocked Queue"   badge="badge-purple" />
+          <ExceptionTable items={failed}    label="Unrecovered Failed Queue" badge="badge-danger" />
+        </>
+      )}
     </div>
   );
 }

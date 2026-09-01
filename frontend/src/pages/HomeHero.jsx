@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { formatINR } from '../components/utils';
 
 export default function HomeHero({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('Overview');
 
   return (
     <div className="landing-hero-container">
-      {/* Background Video with Subtle Ambient Backdrop */}
+      {/* Background Video with Enhanced Clarity & Reduced Fade */}
       <div className="hero-video-wrapper">
         <video
           autoPlay
@@ -24,7 +23,7 @@ export default function HomeHero({ onNavigate }) {
         {/* 1. Top Innovation Badge */}
         <div className="hero-badge animate-in">
           <span className="hero-badge-sparkle">✦</span>
-          <span>Now with Gemini AI & 83.36% ML Model</span>
+          <span>Now with Gemini 2.5 & 83.36% ML Model</span>
           <span className="hero-badge-pill">v2.0</span>
         </div>
 
@@ -76,7 +75,10 @@ export default function HomeHero({ onNavigate }) {
               </div>
 
               <div className="dash-search-box">
-                <span className="search-icon">🔍</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="search-icon-svg">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21L16.65 16.65" />
+                </svg>
                 <span className="search-placeholder">Search TXN001741 or Customer...</span>
                 <span className="search-kbd">⌘K</span>
               </div>
@@ -99,32 +101,37 @@ export default function HomeHero({ onNavigate }) {
                   className={`dash-side-btn ${activeTab === 'Overview' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Overview'); onNavigate('overview'); }}
                 >
-                  <span>📊 Overview</span>
+                  <span className="side-dot-glyph">◆</span>
+                  <span>Overview</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Decision Engine' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Decision Engine'); onNavigate('ai_decision'); }}
                 >
-                  <span>⚡ Decision Engine</span>
+                  <span className="side-dot-glyph">⚡</span>
+                  <span>Decision Engine</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Transactions' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Transactions'); onNavigate('transactions'); }}
                 >
-                  <span>💳 Transactions</span>
+                  <span className="side-dot-glyph">■</span>
+                  <span>Transactions</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Exceptions' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Exceptions'); onNavigate('exceptions'); }}
                 >
-                  <span>⚠️ Exceptions</span>
+                  <span className="side-dot-glyph">▲</span>
+                  <span>Exceptions</span>
                   <span className="dash-badge-count">12</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Batch' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Batch'); onNavigate('batch'); }}
                 >
-                  <span>🧪 Batch Simulator</span>
+                  <span className="side-dot-glyph">●</span>
+                  <span>Batch Simulator</span>
                 </button>
 
                 <div className="dash-sidebar-section" style={{ marginTop: 12 }}>FINANCIAL SAFETY</div>
@@ -149,13 +156,13 @@ export default function HomeHero({ onNavigate }) {
 
                   <div className="dash-action-pills">
                     <button className="dash-pill-btn primary" onClick={(e) => { e.stopPropagation(); onNavigate('ai_decision'); }}>
-                      ⚡ Run AI Agent
+                      Run AI Agent
                     </button>
                     <button className="dash-pill-btn" onClick={(e) => { e.stopPropagation(); onNavigate('batch'); }}>
-                      🧪 Batch Test
+                      Batch Test
                     </button>
                     <button className="dash-pill-btn" onClick={(e) => { e.stopPropagation(); onNavigate('exceptions'); }}>
-                      ⚠️ Triage (12)
+                      Triage (12)
                     </button>
                   </div>
                 </div>
@@ -166,7 +173,7 @@ export default function HomeHero({ onNavigate }) {
                   <div className="dash-card">
                     <div className="dash-card-header">
                       <span className="dash-card-label">RECOVERED REVENUE</span>
-                      <span className="badge badge-success">● Live Sync</span>
+                      <span className="badge badge-success">Live Sync</span>
                     </div>
                     <div className="dash-balance-val">
                       ₹84,50,190<span className="dash-cents">.32</span>
@@ -181,7 +188,7 @@ export default function HomeHero({ onNavigate }) {
                       <svg viewBox="0 0 400 90" className="dash-curve-svg" preserveAspectRatio="none">
                         <defs>
                           <linearGradient id="heroAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#2563EB" stopOpacity="0.22" />
+                            <stop offset="0%" stopColor="#2563EB" stopOpacity="0.25" />
                             <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
                           </linearGradient>
                         </defs>
@@ -201,7 +208,7 @@ export default function HomeHero({ onNavigate }) {
                         {/* Milestone Nodes */}
                         <circle cx="150" cy="45" r="3.5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2" />
                         <circle cx="310" cy="25" r="3.5" fill="#2563EB" stroke="#FFFFFF" strokeWidth="2" />
-                        <circle cx="400" cy="12" r="4" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" />
+                        <circle cx="400" cy="12" r="4" fill="#059669" stroke="#FFFFFF" strokeWidth="2" />
                       </svg>
                     </div>
                   </div>
@@ -214,7 +221,7 @@ export default function HomeHero({ onNavigate }) {
                     </div>
                     <div className="dash-policy-list">
                       <div className="dash-policy-row">
-                        <div className="policy-icon-box">🛡️</div>
+                        <div className="policy-icon-glyph">◆</div>
                         <div className="policy-info">
                           <span className="policy-name">Max Autonomous Limit</span>
                           <span className="policy-sub">Amounts {'>'} ₹5,000 route to human</span>
@@ -223,7 +230,7 @@ export default function HomeHero({ onNavigate }) {
                       </div>
 
                       <div className="dash-policy-row">
-                        <div className="policy-icon-box">🔁</div>
+                        <div className="policy-icon-glyph">◆</div>
                         <div className="policy-info">
                           <span className="policy-name">Max Retries Allowed</span>
                           <span className="policy-sub">Prevents customer fatigue</span>
@@ -232,7 +239,7 @@ export default function HomeHero({ onNavigate }) {
                       </div>
 
                       <div className="dash-policy-row">
-                        <div className="policy-icon-box">⏱️</div>
+                        <div className="policy-icon-glyph">◆</div>
                         <div className="policy-info">
                           <span className="policy-name">Recovery Window</span>
                           <span className="policy-sub">Valid payment age limit</span>
@@ -247,7 +254,7 @@ export default function HomeHero({ onNavigate }) {
                 <div className="dash-table-card">
                   <div className="dash-table-header">
                     <span className="dash-card-label">RECENT CLOSED-LOOP INTERVENTIONS</span>
-                    <span className="dash-table-link">Click to open Decision Engine ›</span>
+                    <span className="dash-table-link">Open Decision Engine ›</span>
                   </div>
                   <table className="dash-mini-table">
                     <thead>
@@ -267,7 +274,7 @@ export default function HomeHero({ onNavigate }) {
                         <td>Temporary Bank Timeout</td>
                         <td><strong>₹2,314</strong></td>
                         <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>74.7%</span></td>
-                        <td><span className="badge badge-success">✅ Recovered</span></td>
+                        <td><span className="badge badge-success">Recovered</span></td>
                       </tr>
                       <tr>
                         <td><code>TXN000042</code></td>
@@ -275,7 +282,7 @@ export default function HomeHero({ onNavigate }) {
                         <td>Network Degradation</td>
                         <td><strong>₹8,450</strong></td>
                         <td><span style={{ color: 'var(--accent-yellow)', fontWeight: 700 }}>62.1%</span></td>
-                        <td><span className="badge badge-warning">⚠️ Escalated ({'>'}₹5k)</span></td>
+                        <td><span className="badge badge-warning">Escalated ({'>'}₹5k)</span></td>
                       </tr>
                       <tr>
                         <td><code>TXN000108</code></td>
@@ -283,7 +290,7 @@ export default function HomeHero({ onNavigate }) {
                         <td>Payment Gateway Flapping</td>
                         <td><strong>₹4,120</strong></td>
                         <td><span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>81.2%</span></td>
-                        <td><span className="badge badge-success">✅ Recovered</span></td>
+                        <td><span className="badge badge-success">Recovered</span></td>
                       </tr>
                     </tbody>
                   </table>

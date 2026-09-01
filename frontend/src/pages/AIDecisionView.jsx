@@ -41,15 +41,15 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
   return (
     <div className="animate-in">
       <div className="page-header">
-        <p>Recovery Decision Engine</p>
-        <h2>Autonomous Agent & Policy Breakdown</h2>
+        <p>Intelligence Pipeline</p>
+        <h2>Autonomous <span className="italic-serif">Decision Engine</span></h2>
       </div>
 
       {/* Search Bar */}
       <div className="card" style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
           <div className="input-group" style={{ flex: 1 }}>
-            <label>Transaction ID</label>
+            <label>Transaction Identifier</label>
             <input
               placeholder="e.g. TXN000001, TXN001741"
               value={txnInput}
@@ -58,17 +58,17 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
             />
           </div>
           <button className="btn btn-primary" onClick={handleAnalyze} disabled={loading}>
-            {loading ? <><div className="spinner" /> Analyzing...</> : '🔍 Analyze Signals'}
+            {loading ? <><div className="spinner" /> Analyzing...</> : 'Analyze Signals'}
           </button>
         </div>
-        {error && <div style={{ marginTop: 10, color: 'var(--accent-red)', fontSize: 13 }}>⚠️ {error}</div>}
+        {error && <div style={{ marginTop: 10, color: 'var(--accent-red)', fontSize: 13, fontWeight: 600 }}>Notice: {error}</div>}
       </div>
 
       {txn && (
         <>
           {/* Visual Multi-Step Agent Pipeline Trace */}
           <div className="card" style={{ marginBottom: 20, background: '#FFFFFF' }}>
-            <div className="section-title">⚡ Autonomous Agent Multi-Stage Pipeline</div>
+            <div className="section-title">Autonomous Agent Multi-Stage Pipeline</div>
             <div className="agent-pipeline-grid">
               <div className="pipeline-step active">
                 <div className="step-num">1</div>
@@ -79,7 +79,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
                 </div>
               </div>
 
-              <div className="pipeline-arrow">→</div>
+              <div className="pipeline-arrow">›</div>
 
               <div className={`pipeline-step ${pred ? 'active' : ''}`}>
                 <div className="step-num">2</div>
@@ -94,7 +94,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
                 </div>
               </div>
 
-              <div className="pipeline-arrow">→</div>
+              <div className="pipeline-arrow">›</div>
 
               <div className={`pipeline-step ${agentResult || analysis ? 'active' : ''}`}>
                 <div className="step-num">3</div>
@@ -107,7 +107,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
                 </div>
               </div>
 
-              <div className="pipeline-arrow">→</div>
+              <div className="pipeline-arrow">›</div>
 
               <div className={`pipeline-step ${analysis?.policyChecks ? 'active' : ''}`}>
                 <div className="step-num">4</div>
@@ -120,7 +120,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
                 </div>
               </div>
 
-              <div className="pipeline-arrow">→</div>
+              <div className="pipeline-arrow">›</div>
 
               <div className={`pipeline-step ${agentResult ? 'active' : ''}`}>
                 <div className="step-num">5</div>
@@ -138,11 +138,11 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
           {/* Transaction Details & ML Prediction */}
           <div className="card-grid card-grid-2" style={{ marginBottom: 20 }}>
             <div className="card">
-              <div className="section-title">💳 Ingested Transaction Signals</div>
+              <div className="section-title">Ingested Transaction Signals</div>
               {[
-                ['Transaction ID', <code style={{ color: 'var(--accent-blue)' }}>{txn.transactionId}</code>],
-                ['Customer ID',    txn.customerId],
-                ['Amount',         <strong>{formatINR(txn.amount)}</strong>],
+                ['Transaction ID', <code style={{ color: 'var(--accent-blue)', fontWeight: 700 }}>{txn.transactionId}</code>],
+                ['Customer ID',    <span className="mono">{txn.customerId}</span>],
+                ['Amount',         <strong style={{ fontFamily: 'JetBrains Mono, monospace' }}>{formatINR(txn.amount)}</strong>],
                 ['Currency',       txn.currency],
                 ['Payment Method', <span className="badge badge-info">{txn.paymentMethod}</span>],
                 ['Failure Reason', <span className="badge badge-danger">{failureLabel(txn.failureReason)}</span>],
@@ -155,14 +155,14 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
             </div>
 
             <div className="card">
-              <div className="section-title">🧠 Machine Learning Prediction</div>
+              <div className="section-title">Machine Learning Prediction</div>
               {pred && (
                 <>
                   <div style={{ textAlign: 'center', padding: '16px 0' }}>
-                    <div style={{ fontSize: 44, fontWeight: 800, color: pred.recoveryProbability >= 0.65 ? 'var(--accent-green)' : pred.recoveryProbability >= 0.40 ? 'var(--accent-yellow)' : 'var(--accent-red)' }}>
+                    <div style={{ fontSize: 44, fontWeight: 800, fontFamily: 'JetBrains Mono, monospace', color: pred.recoveryProbability >= 0.65 ? 'var(--accent-green)' : pred.recoveryProbability >= 0.40 ? 'var(--accent-yellow)' : 'var(--accent-red)' }}>
                       {(pred.recoveryProbability * 100).toFixed(1)}%
                     </div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 2 }}>Held-Out Test Probability</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 2, fontWeight: 600 }}>Held-Out Test Probability</div>
                   </div>
                   <ProbBar prob={pred.recoveryProbability} />
                   <div style={{ marginTop: 14 }}>
@@ -181,24 +181,24 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
           {/* Policy Checks */}
           <div className="card" style={{ marginBottom: 20 }}>
-            <div className="section-title">🛡️ Deterministic Policy Engine Checks (Financial Safety Gate)</div>
+            <div className="section-title">Deterministic Policy Engine Checks (Financial Safety Gate)</div>
             {analysis.policyChecks?.RETRY_PAYMENT?.checks?.map((c, i) => (
               <div key={i} className={`policy-check ${c.passed ? 'pass' : 'fail'}`}>
-                <span className="icon">{c.passed ? '✅' : '❌'}</span>
-                <span style={{ fontWeight: 600, minWidth: 200, fontSize: 12 }}>{c.rule}</span>
+                <span className="icon" style={{ fontWeight: 800 }}>{c.passed ? '✓' : '✕'}</span>
+                <span style={{ fontWeight: 700, minWidth: 200, fontSize: 12 }}>{c.rule}</span>
                 <span style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{c.detail}</span>
               </div>
             ))}
-            <div style={{ marginTop: 12, padding: '10px 16px', borderRadius: 8, background: analysis.policyChecks?.RETRY_PAYMENT?.allowed ? 'rgba(34,208,122,0.08)' : 'rgba(255,79,106,0.08)', border: `1px solid ${analysis.policyChecks?.RETRY_PAYMENT?.allowed ? 'rgba(34,208,122,0.3)' : 'rgba(255,79,106,0.3)'}`, fontSize: 13, fontWeight: 600 }}>
+            <div style={{ marginTop: 12, padding: '10px 16px', borderRadius: 8, background: analysis.policyChecks?.RETRY_PAYMENT?.allowed ? 'rgba(5,150,105,0.08)' : 'rgba(225,29,72,0.08)', border: `1px solid ${analysis.policyChecks?.RETRY_PAYMENT?.allowed ? 'rgba(5,150,105,0.3)' : 'rgba(225,29,72,0.3)'}`, fontSize: 13, fontWeight: 700 }}>
               {analysis.policyChecks?.RETRY_PAYMENT?.allowed
-                ? '✅ RETRY_PAYMENT is ALLOWED by policy'
-                : `🚫 RETRY_PAYMENT is BLOCKED: ${analysis.policyChecks?.RETRY_PAYMENT?.reason}`}
+                ? 'Policy Passed: RETRY_PAYMENT is authorized for execution'
+                : `Policy Blocked: ${analysis.policyChecks?.RETRY_PAYMENT?.reason}`}
             </div>
           </div>
 
           {/* Execution Controls */}
           <div className="card" style={{ marginBottom: 20 }}>
-            <div className="section-title">🤖 Closed-Loop Recovery Execution</div>
+            <div className="section-title">Closed-Loop Recovery Execution</div>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16 }}>
               Triggers the AI agent to orchestrate recovery, pass through the policy engine, simulate payment execution, and write an immutable audit log.
             </p>
@@ -211,14 +211,14 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
               >
                 {agentLoading
                   ? <><div className="spinner" /> Executing Recovery Agent...</>
-                  : '🚀 Run AI Recovery Agent'}
+                  : 'Run AI Recovery Agent'}
               </button>
               <button
                 className="btn btn-primary"
                 onClick={() => setShowCheckoutModal(true)}
                 style={{ fontSize: 14, padding: '10px 24px' }}
               >
-                💳 Live Razorpay Checkout Test
+                Live Razorpay Checkout Test
               </button>
             </div>
           </div>
@@ -239,28 +239,30 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
           {/* Agent Execution Result */}
           {agentResult && (
             <div className="card animate-in">
-              <div className="section-title">🏁 Execution & Recovery Outcome</div>
+              <div className="section-title">Execution & Recovery Outcome</div>
               <div style={{
                 padding: '16px 20px',
                 borderRadius: 12,
-                background: agentResult.success ? 'rgba(34,208,122,0.08)' : agentResult.status === 'BLOCKED' ? 'rgba(155,109,255,0.08)' : 'rgba(255,79,106,0.08)',
-                border: `1px solid ${agentResult.success ? 'rgba(34,208,122,0.3)' : agentResult.status === 'BLOCKED' ? 'rgba(155,109,255,0.3)' : 'rgba(255,79,106,0.3)'}`,
+                background: agentResult.success ? 'rgba(5,150,105,0.08)' : agentResult.status === 'BLOCKED' ? 'rgba(124,58,237,0.08)' : 'rgba(225,29,72,0.08)',
+                border: `1px solid ${agentResult.success ? 'rgba(5,150,105,0.3)' : agentResult.status === 'BLOCKED' ? 'rgba(124,58,237,0.3)' : 'rgba(225,29,72,0.3)'}`,
                 marginBottom: 16
               }}>
                 <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>{agentResult.message}</div>
                 {agentResult.revenueRecovered > 0 && (
-                  <div style={{ color: 'var(--accent-green)', fontSize: 24, fontWeight: 800 }}>{formatINR(agentResult.revenueRecovered)} Recovered</div>
+                  <div style={{ color: 'var(--accent-green)', fontSize: 24, fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>
+                    {formatINR(agentResult.revenueRecovered)} Recovered
+                  </div>
                 )}
               </div>
 
               {agentResult.agentDecision && (
                 <div>
-                  <div className="section-title">🤖 AI Agent Decision Breakdown</div>
+                  <div className="section-title">AI Agent Decision Breakdown</div>
                   {[
                     ['Proposed Action', <span className="badge badge-info">{agentResult.agentDecision.action}</span>],
                     ['Confidence',      `${(agentResult.agentDecision.confidence * 100).toFixed(1)}%`],
                     ['Reasoning',       agentResult.agentDecision.reason],
-                    ['Human Approval?', agentResult.agentDecision.requires_human_approval ? '⚠️ Yes' : '✅ No'],
+                    ['Human Approval?', agentResult.agentDecision.requires_human_approval ? 'Required' : 'Autonomous'],
                   ].map(([l, v]) => (
                     <div key={l} className="stat-row"><span className="stat-label">{l}</span><span className="stat-value">{v}</span></div>
                   ))}
@@ -276,7 +278,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
               <div style={{ marginTop: 16 }}>
                 <button className="btn btn-outline btn-sm" onClick={() => onNavigate('audit', txn.transactionId)}>
-                  📋 View Audit Trail
+                  View Audit Trail
                 </button>
               </div>
             </div>
@@ -286,9 +288,8 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
       {!txn && !loading && (
         <div className="empty-state">
-          <div className="icon">🔍</div>
           <p>Enter a Transaction ID above to see the full AI decision breakdown</p>
-          <p style={{ fontSize: 12, marginTop: 8 }}>Try: TXN000001, TXN001741, TXN000004</p>
+          <p style={{ fontSize: 12, marginTop: 8 }} className="mono">Try: TXN000001, TXN001741, TXN000004</p>
         </div>
       )}
     </div>

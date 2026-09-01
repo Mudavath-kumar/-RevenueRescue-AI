@@ -35,22 +35,23 @@ export default function TransactionExplorer({ onNavigate, setSelectedTxnId }) {
     <div className="animate-in">
       <div className="page-header">
         <p>Ledger Intelligence</p>
-        <h2>Transaction Explorer</h2>
+        <h2>Transaction <span className="italic-serif">Explorer</span></h2>
       </div>
 
       {/* Filters */}
       <div className="card" style={{ marginBottom: 20 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 12 }}>
           <div className="input-group">
-            <label>Search</label>
+            <label>Search Identifier</label>
             <input
-              placeholder="TXN ID or Customer ID..."
+              placeholder="e.g. TXN001741, CUS001..."
               value={filters.search}
               onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
+              onKeyDown={e => e.key === 'Enter' && applyFilter()}
             />
           </div>
           <div className="input-group">
-            <label>Status</label>
+            <label>Payment Status</label>
             <select value={filters.status} onChange={e => setFilters(f => ({ ...f, status: e.target.value }))}>
               {STATUSES.map(s => <option key={s} value={s}>{s || 'All Statuses'}</option>)}
             </select>
@@ -64,12 +65,18 @@ export default function TransactionExplorer({ onNavigate, setSelectedTxnId }) {
           <div className="input-group">
             <label>Failure Reason</label>
             <select value={filters.failureReason} onChange={e => setFilters(f => ({ ...f, failureReason: e.target.value }))}>
-              {REASONS.map(r => <option key={r} value={r}>{r ? failureLabel(r) : 'All Reasons'}</option>)}
+              {REASONS.map(r => <option key={r} value={r}>{r ? failureLabel(r) : 'All Failure Reasons'}</option>)}
             </select>
           </div>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={applyFilter}>🔍 Apply Filters</button>
-        <button className="btn btn-outline btn-sm" style={{ marginLeft: 8 }} onClick={() => { setFilters({ status: '', paymentMethod: '', failureReason: '', search: '' }); load(1, {}); }}>✕ Clear</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-primary btn-sm" onClick={applyFilter}>
+            Apply Filters
+          </button>
+          <button className="btn btn-outline btn-sm" onClick={() => { setFilters({ status: '', paymentMethod: '', failureReason: '', search: '' }); load(1, {}); }}>
+            Reset
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -82,28 +89,28 @@ export default function TransactionExplorer({ onNavigate, setSelectedTxnId }) {
                 <th>Customer</th>
                 <th>Amount</th>
                 <th>Method</th>
-                <th>Failure Reason</th>
+                <th>Failure Root Cause</th>
                 <th>Recovery Prob.</th>
                 <th>Status</th>
-                <th>Created</th>
+                <th>Timestamp</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8}><div className="loader"><div className="spinner" />Loading...</div></td></tr>
+                <tr><td colSpan={8}><div className="loader"><div className="spinner" />Loading ledger entries...</div></td></tr>
               ) : transactions.length === 0 ? (
-                <tr><td colSpan={8}><div className="empty-state"><p>No transactions found</p></div></td></tr>
+                <tr><td colSpan={8}><div className="empty-state"><p>No transactions match the selected criteria</p></div></td></tr>
               ) : transactions.map(t => (
-                <tr key={t.transactionId} onClick={() => handleRowClick(t.transactionId)} title="Click to view AI Decision">
-                  <td><code style={{ color: 'var(--accent-blue)', fontSize: 12 }}>{t.transactionId}</code></td>
-                  <td className="muted">{t.customerId}</td>
-                  <td style={{ fontWeight: 700 }}>{formatINR(t.amount)}</td>
+                <tr key={t.transactionId} onClick={() => handleRowClick(t.transactionId)} title="Click to view Decision Engine breakdown">
+                  <td><code style={{ color: 'var(--accent-blue)', fontSize: 12, fontWeight: 700 }}>{t.transactionId}</code></td>
+                  <td className="muted mono">{t.customerId}</td>
+                  <td style={{ fontWeight: 800, fontFamily: 'JetBrains Mono, monospace' }}>{formatINR(t.amount)}</td>
                   <td><span className="badge badge-info">{t.paymentMethod}</span></td>
-                  <td className="muted" style={{ fontSize: 11 }}>{failureLabel(t.failureReason)}</td>
+                  <td className="muted" style={{ fontSize: 11.5 }}>{failureLabel(t.failureReason)}</td>
                   <td>
                     {t.recoveryProbability != null
                       ? <ProbBar prob={t.recoveryProbability} />
-                      : <span className="muted">—</span>}
+                      : <span className="muted mono">—</span>}
                   </td>
                   <td><span className={`badge ${statusBadge(t.status)}`}>{t.status}</span></td>
                   <td className="muted" style={{ fontSize: 11 }}>{formatDate(t.createdAt)}</td>
@@ -115,11 +122,11 @@ export default function TransactionExplorer({ onNavigate, setSelectedTxnId }) {
 
         {/* Pagination */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, fontSize: 12, color: 'var(--text-muted)' }}>
-          <span>Showing {transactions.length} of {total.toLocaleString()}</span>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-outline btn-sm" onClick={() => load(page - 1)} disabled={page <= 1}>‹ Prev</button>
-            <span style={{ padding: '5px 12px', background: 'var(--bg-secondary)', borderRadius: 6 }}>Page {page}</span>
-            <button className="btn btn-outline btn-sm" onClick={() => load(page + 1)} disabled={transactions.length < 50}>Next ›</button>
+          <span>Showing {transactions.length} of {total.toLocaleString()} transactions</span>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button className="btn btn-outline btn-sm" onClick={() => load(page - 1)} disabled={page <= 1}>Previous</button>
+            <span style={{ padding: '4px 10px', background: 'var(--bg-subtle)', borderRadius: 6, fontWeight: 700, color: 'var(--text-primary)' }}>Page {page}</span>
+            <button className="btn btn-outline btn-sm" onClick={() => load(page + 1)} disabled={transactions.length < 50}>Next</button>
           </div>
         </div>
       </div>

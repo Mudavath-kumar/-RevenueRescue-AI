@@ -158,7 +158,15 @@ export default function HomeHero({ onNavigate }) {
             {/* Top Bar */}
             <div className="dash-top-bar">
               <div className="dash-brand">
-                <div className="dash-logo-sq">R</div>
+                <div className="dash-logo-sq">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"
+                      fill="#3B82F6"
+                    />
+                    <circle cx="12" cy="12" r="2" fill="#FFFFFF" />
+                  </svg>
+                </div>
                 <span className="dash-title">RescueFlow</span>
                 <span className="dash-chevron">›</span>
                 <span className="dash-crumb">Merchant Production Ledger</span>

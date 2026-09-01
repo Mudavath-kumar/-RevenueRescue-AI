@@ -1232,7 +1232,7 @@ input:focus, select:focus {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 40px 24px 60px;
+  padding: 36px 28px 60px;
   overflow-x: hidden;
   box-sizing: border-box;
 }
@@ -1269,7 +1269,7 @@ input:focus, select:focus {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1380px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -1426,7 +1426,7 @@ input:focus, select:focus {
 /* 5. Custom Coded Live Dashboard Preview */
 .hero-dashboard-preview-wrapper {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1380px;
   margin: 0 auto;
   cursor: pointer;
   box-sizing: border-box;
@@ -1895,7 +1895,7 @@ input:focus, select:focus {
 /* ── Section 2: Trust & Architecture Metrics Strip ────────────── */
 .home-stats-strip {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1380px;
   margin: 48px auto 60px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1955,7 +1955,7 @@ input:focus, select:focus {
 /* ── Section 3 & 4: Sections Layout & Headers ─────────────────── */
 .home-section-container {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1380px;
   margin: 0 auto 72px;
   text-align: left;
   box-sizing: border-box;
@@ -2148,7 +2148,7 @@ input:focus, select:focus {
 /* ── Guided 5-Minute Tour Card ────────────────────────────────── */
 .home-tour-card {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1380px;
   margin: 0 auto 72px;
   background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   color: #FFFFFF;
@@ -2242,7 +2242,7 @@ input:focus, select:focus {
 /* ── Bottom Launch CTA Banner ─────────────────────────────────── */
 .home-bottom-banner {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1380px;
   margin: 0 auto 40px;
   text-align: center;
   background: #FFFFFF;

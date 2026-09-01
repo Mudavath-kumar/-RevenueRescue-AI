@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './index.css';
 import HeaderNav from './components/HeaderNav';
+import RescueCopilot from './components/RescueCopilot';
 import Overview from './pages/Overview';
 import TransactionExplorer from './pages/TransactionExplorer';
 import AIDecisionView from './pages/AIDecisionView';
@@ -42,6 +43,12 @@ export default function App() {
           setSelectedTxnId={setSelectedTxnId}
         />
       </main>
+
+      {/* Floating RescueCopilot Assistant */}
+      <RescueCopilot
+        selectedTxnId={selectedTxnId}
+        onNavigate={navigateTo}
+      />
     </div>
   );
 }

@@ -19,5 +19,6 @@ export const runSimulation       = (params) => API.post('/simulation/run', param
 export const getMLMetrics        = () => API.get('/ml/metrics');
 export const createRazorpayOrder = (data) => API.post('/razorpay/create-order', data);
 export const verifyRazorpayPayment = (data) => API.post('/razorpay/verify-payment', data);
+export const askCopilot = (data) => API.post('/copilot/chat', data);
 
 export default API;

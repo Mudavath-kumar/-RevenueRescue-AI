@@ -42,23 +42,23 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
     <div className="animate-in">
       <div className="page-header">
         <p>Recovery Decision Engine</p>
-        <h2>Decision Breakdown</h2>
+        <h2>Autonomous Agent & Policy Breakdown</h2>
       </div>
 
-      {/* Search */}
+      {/* Search Bar */}
       <div className="card" style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end' }}>
           <div className="input-group" style={{ flex: 1 }}>
             <label>Transaction ID</label>
             <input
-              placeholder="e.g. TXN000001"
+              placeholder="e.g. TXN000001, TXN001741"
               value={txnInput}
               onChange={e => setTxnInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleAnalyze()}
             />
           </div>
           <button className="btn btn-primary" onClick={handleAnalyze} disabled={loading}>
-            {loading ? <><div className="spinner" /> Analyzing...</> : '🔍 Analyze'}
+            {loading ? <><div className="spinner" /> Analyzing...</> : '🔍 Analyze Signals'}
           </button>
         </div>
         {error && <div style={{ marginTop: 10, color: 'var(--accent-red)', fontSize: 13 }}>⚠️ {error}</div>}
@@ -66,10 +66,79 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
       {txn && (
         <>
-          {/* Transaction Details */}
+          {/* Visual Multi-Step Agent Pipeline Trace */}
+          <div className="card" style={{ marginBottom: 20, background: '#FFFFFF' }}>
+            <div className="section-title">⚡ Autonomous Agent Multi-Stage Pipeline</div>
+            <div className="agent-pipeline-grid">
+              <div className="pipeline-step active">
+                <div className="step-num">1</div>
+                <div className="step-content">
+                  <div className="step-title">Signal Ingestion</div>
+                  <div className="step-desc">9 features extracted (Method, Latency, Failure reason)</div>
+                  <span className="badge badge-info" style={{ marginTop: 4 }}>Extracted</span>
+                </div>
+              </div>
+
+              <div className="pipeline-arrow">→</div>
+
+              <div className={`pipeline-step ${pred ? 'active' : ''}`}>
+                <div className="step-num">2</div>
+                <div className="step-content">
+                  <div className="step-title">ML Inference</div>
+                  <div className="step-desc">Random Forest (83.36% ROC-AUC)</div>
+                  {pred && (
+                    <span className={`badge ${pred.recoveryProbability >= 0.65 ? 'badge-success' : 'badge-warning'}`} style={{ marginTop: 4 }}>
+                      {(pred.recoveryProbability * 100).toFixed(1)}% Prob
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="pipeline-arrow">→</div>
+
+              <div className={`pipeline-step ${agentResult || analysis ? 'active' : ''}`}>
+                <div className="step-num">3</div>
+                <div className="step-content">
+                  <div className="step-title">AI Synthesis</div>
+                  <div className="step-desc">Gemini Agent reasoning & tool calls</div>
+                  <span className="badge badge-purple" style={{ marginTop: 4 }}>
+                    {agentResult?.agentDecision?.action || 'RETRY_PAYMENT'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pipeline-arrow">→</div>
+
+              <div className={`pipeline-step ${analysis?.policyChecks ? 'active' : ''}`}>
+                <div className="step-num">4</div>
+                <div className="step-content">
+                  <div className="step-title">Policy Safety Gate</div>
+                  <div className="step-desc">Amount, retry limit, 48h window checks</div>
+                  <span className={`badge ${analysis?.policyChecks?.RETRY_PAYMENT?.allowed ? 'badge-success' : 'badge-danger'}`} style={{ marginTop: 4 }}>
+                    {analysis?.policyChecks?.RETRY_PAYMENT?.allowed ? 'Policy Passed' : 'Blocked'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pipeline-arrow">→</div>
+
+              <div className={`pipeline-step ${agentResult ? 'active' : ''}`}>
+                <div className="step-num">5</div>
+                <div className="step-content">
+                  <div className="step-title">Closed-Loop Result</div>
+                  <div className="step-desc">Execution & HMAC Audit Log</div>
+                  <span className={`badge ${agentResult?.success ? 'badge-success' : agentResult ? 'badge-warning' : 'badge-muted'}`} style={{ marginTop: 4 }}>
+                    {agentResult ? (agentResult.success ? 'Recovered' : agentResult.status) : 'Ready'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Transaction Details & ML Prediction */}
           <div className="card-grid card-grid-2" style={{ marginBottom: 20 }}>
             <div className="card">
-              <div className="section-title">💳 Transaction Details</div>
+              <div className="section-title">💳 Ingested Transaction Signals</div>
               {[
                 ['Transaction ID', <code style={{ color: 'var(--accent-blue)' }}>{txn.transactionId}</code>],
                 ['Customer ID',    txn.customerId],
@@ -86,20 +155,20 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
             </div>
 
             <div className="card">
-              <div className="section-title">🧠 ML Prediction</div>
+              <div className="section-title">🧠 Machine Learning Prediction</div>
               {pred && (
                 <>
-                  <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                    <div style={{ fontSize: 48, fontWeight: 800, color: pred.recoveryProbability >= 0.65 ? 'var(--accent-green)' : pred.recoveryProbability >= 0.40 ? 'var(--accent-yellow)' : 'var(--accent-red)' }}>
+                  <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                    <div style={{ fontSize: 44, fontWeight: 800, color: pred.recoveryProbability >= 0.65 ? 'var(--accent-green)' : pred.recoveryProbability >= 0.40 ? 'var(--accent-yellow)' : 'var(--accent-red)' }}>
                       {(pred.recoveryProbability * 100).toFixed(1)}%
                     </div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4 }}>Recovery Probability</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 12, marginTop: 2 }}>Held-Out Test Probability</div>
                   </div>
                   <ProbBar prob={pred.recoveryProbability} />
-                  <div style={{ marginTop: 16 }}>
+                  <div style={{ marginTop: 14 }}>
                     {[
                       ['Risk Level',          <span className={`badge ${pred.riskLevel === 'LOW' ? 'badge-success' : pred.riskLevel === 'MEDIUM' ? 'badge-warning' : 'badge-danger'}`}>{pred.riskLevel}</span>],
-                      ['Recommended Action', pred.recommendedAction],
+                      ['Recommended Action', <strong>{pred.recommendedAction}</strong>],
                       ['Model Version',       pred.modelVersion],
                     ].map(([l, v]) => (
                       <div key={l} className="stat-row"><span className="stat-label">{l}</span><span className="stat-value">{v}</span></div>
@@ -112,7 +181,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
           {/* Policy Checks */}
           <div className="card" style={{ marginBottom: 20 }}>
-            <div className="section-title">🛡️ Policy Engine Checks (RETRY_PAYMENT)</div>
+            <div className="section-title">🛡️ Deterministic Policy Engine Checks (Financial Safety Gate)</div>
             {analysis.policyChecks?.RETRY_PAYMENT?.checks?.map((c, i) => (
               <div key={i} className={`policy-check ${c.passed ? 'pass' : 'fail'}`}>
                 <span className="icon">{c.passed ? '✅' : '❌'}</span>
@@ -127,11 +196,11 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
             </div>
           </div>
 
-          {/* Run AI Agent */}
+          {/* Execution Controls */}
           <div className="card" style={{ marginBottom: 20 }}>
-            <div className="section-title">🤖 Run Full AI Recovery Agent</div>
+            <div className="section-title">🤖 Closed-Loop Recovery Execution</div>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16 }}>
-              Triggers the Gemini AI agent to analyze this transaction using all tools, then routes through the policy engine for execution.
+              Triggers the AI agent to orchestrate recovery, pass through the policy engine, simulate payment execution, and write an immutable audit log.
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <button
@@ -141,7 +210,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
                 style={{ fontSize: 14, padding: '10px 24px' }}
               >
                 {agentLoading
-                  ? <><div className="spinner" /> AI Agent Running...</>
+                  ? <><div className="spinner" /> Executing Recovery Agent...</>
                   : '🚀 Run AI Recovery Agent'}
               </button>
               <button
@@ -167,10 +236,10 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
             />
           )}
 
-          {/* Agent Result */}
+          {/* Agent Execution Result */}
           {agentResult && (
             <div className="card animate-in">
-              <div className="section-title">🏁 Recovery Result</div>
+              <div className="section-title">🏁 Execution & Recovery Outcome</div>
               <div style={{
                 padding: '16px 20px',
                 borderRadius: 12,
@@ -186,7 +255,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
               {agentResult.agentDecision && (
                 <div>
-                  <div className="section-title">🤖 Agent Decision</div>
+                  <div className="section-title">🤖 AI Agent Decision Breakdown</div>
                   {[
                     ['Proposed Action', <span className="badge badge-info">{agentResult.agentDecision.action}</span>],
                     ['Confidence',      `${(agentResult.agentDecision.confidence * 100).toFixed(1)}%`],
@@ -219,7 +288,7 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
         <div className="empty-state">
           <div className="icon">🔍</div>
           <p>Enter a Transaction ID above to see the full AI decision breakdown</p>
-          <p style={{ fontSize: 12, marginTop: 8 }}>Try: TXN000001, TXN000002, etc.</p>
+          <p style={{ fontSize: 12, marginTop: 8 }}>Try: TXN000001, TXN001741, TXN000004</p>
         </div>
       )}
     </div>

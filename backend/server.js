@@ -27,6 +27,7 @@ app.use('/api/simulation', require('./routes/simulation'));
 app.use('/api/exceptions', require('./routes/exceptions'));
 app.use('/api/razorpay', require('./routes/razorpay'));
 app.use('/api/ml', require('./routes/ml'));
+app.use('/api/copilot', require('./routes/copilot'));
 
 // ─── Health Check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

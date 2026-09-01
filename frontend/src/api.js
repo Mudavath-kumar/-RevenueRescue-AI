@@ -6,6 +6,23 @@ const API_BASE = import.meta.env.VITE_API_URL
 
 const API = axios.create({ baseURL: API_BASE });
 
+// Automatically attach JWT token to all requests if logged in
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('rescueflow_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+// Auth endpoints
+export const signupUser          = (data) => API.post('/auth/signup', data);
+export const loginUser           = (data) => API.post('/auth/login', data);
+export const getMe               = () => API.get('/auth/me');
+
+// Core Platform endpoints
 export const getDashboardMetrics = () => API.get('/dashboard/metrics');
 export const getTransactions     = (params) => API.get('/transactions', { params });
 export const getTransaction      = (id) => API.get(`/transactions/${id}`);
@@ -19,6 +36,6 @@ export const runSimulation       = (params) => API.post('/simulation/run', param
 export const getMLMetrics        = () => API.get('/ml/metrics');
 export const createRazorpayOrder = (data) => API.post('/razorpay/create-order', data);
 export const verifyRazorpayPayment = (data) => API.post('/razorpay/verify-payment', data);
-export const askCopilot = (data) => API.post('/copilot/chat', data);
+export const askCopilot          = (data) => API.post('/copilot/chat', data);
 
 export default API;

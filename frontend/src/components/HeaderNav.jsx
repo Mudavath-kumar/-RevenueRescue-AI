@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getExceptions } from '../api';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from './AuthModal';
 
 const NavIcons = {
   home: (
@@ -69,8 +71,10 @@ const NAV_TABS = [
 ];
 
 export default function HeaderNav({ activePage, onNavigate }) {
+  const { user, logout, isAuthenticated } = useAuth();
   const [exceptionCount, setExceptionCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   useEffect(() => {
     getExceptions()
@@ -134,12 +138,39 @@ export default function HeaderNav({ activePage, onNavigate }) {
             })}
           </nav>
 
-          {/* Right: Live Engine Beacon & Launch Button */}
+          {/* Right: Auth Profile + Live Engine Beacon */}
           <div className="nav-utilities">
             <div className="status-indicator-pill header-status-desktop">
               <span className="pulse-dot" />
               <span className="status-label">Engine Active</span>
             </div>
+
+            {/* Auth Actions on Desktop */}
+            {isAuthenticated ? (
+              <div className="user-profile-cluster header-auth-desktop">
+                <div className="user-avatar-badge" title={user.email}>
+                  {user.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
+                </div>
+                <div className="user-details-mini">
+                  <span className="user-name-text">{user.name || 'Merchant'}</span>
+                  <span className="user-role-text">{user.role || 'merchant'}</span>
+                </div>
+                <button
+                  className="btn-user-logout"
+                  onClick={logout}
+                  title="Sign Out"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                className="btn btn-outline btn-sm header-auth-desktop"
+                onClick={() => setAuthModalOpen(true)}
+              >
+                Sign In
+              </button>
+            )}
 
             <button
               className="btn btn-primary btn-sm nav-cta-btn header-cta-desktop"
@@ -162,6 +193,33 @@ export default function HeaderNav({ activePage, onNavigate }) {
         {/* Mobile Slide-Down Navigation Menu */}
         {mobileMenuOpen && (
           <div className="mobile-nav-drawer animate-in">
+            {/* User Profile in Drawer if Logged In */}
+            {isAuthenticated ? (
+              <div className="mobile-user-card">
+                <div className="user-avatar-badge">
+                  {user.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: 'var(--text-primary)' }}>{user.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{user.email} • <span style={{ textTransform: 'capitalize' }}>{user.role}</span></div>
+                </div>
+                <button
+                  className="btn btn-outline btn-sm"
+                  onClick={() => { logout(); setMobileMenuOpen(false); }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                className="btn btn-outline"
+                style={{ width: '100%', padding: '10px' }}
+                onClick={() => { setMobileMenuOpen(false); setAuthModalOpen(true); }}
+              >
+                Sign In / Create Account
+              </button>
+            )}
+
             <div className="mobile-nav-grid">
               {NAV_TABS.map((tab) => {
                 const isActive = activePage === tab.id;
@@ -206,6 +264,12 @@ export default function HeaderNav({ activePage, onNavigate }) {
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
+
+      {/* Auth Modal (Sign In / Sign Up) */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './index.css';
+import { AuthProvider } from './context/AuthContext';
 import HeaderNav from './components/HeaderNav';
 import RescueCopilot from './components/RescueCopilot';
 import HomeHero from './pages/HomeHero';
@@ -33,24 +34,26 @@ export default function App() {
   };
 
   return (
-    <div className={`app-shell ${activePage === 'home' ? 'is-home-page' : ''}`}>
-      {/* Top Floating Command Navigation Bar */}
-      <HeaderNav activePage={activePage} onNavigate={navigateTo} />
+    <AuthProvider>
+      <div className={`app-shell ${activePage === 'home' ? 'is-home-page' : ''}`}>
+        {/* Top Floating Command Navigation Bar */}
+        <HeaderNav activePage={activePage} onNavigate={navigateTo} />
 
-      {/* Main Responsive Canvas */}
-      <main className={activePage === 'home' ? 'hero-main-container' : 'content-container'}>
-        <PageComponent
-          onNavigate={navigateTo}
+        {/* Main Responsive Canvas */}
+        <main className={activePage === 'home' ? 'hero-main-container' : 'content-container'}>
+          <PageComponent
+            onNavigate={navigateTo}
+            selectedTxnId={selectedTxnId}
+            setSelectedTxnId={setSelectedTxnId}
+          />
+        </main>
+
+        {/* Floating RescueCopilot Assistant */}
+        <RescueCopilot
           selectedTxnId={selectedTxnId}
-          setSelectedTxnId={setSelectedTxnId}
+          onNavigate={navigateTo}
         />
-      </main>
-
-      {/* Floating RescueCopilot Assistant */}
-      <RescueCopilot
-        selectedTxnId={selectedTxnId}
-        onNavigate={navigateTo}
-      />
-    </div>
+      </div>
+    </AuthProvider>
   );
 }

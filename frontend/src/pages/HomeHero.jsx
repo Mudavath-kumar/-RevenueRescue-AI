@@ -199,28 +199,44 @@ export default function HomeHero({ onNavigate }) {
                   className={`dash-side-btn ${activeTab === 'Overview' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Overview'); onNavigate('overview'); }}
                 >
-                  <span className="side-dot-glyph">◆</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                  </svg>
                   <span>Overview</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Decision Engine' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Decision Engine'); onNavigate('ai_decision'); }}
                 >
-                  <span className="side-dot-glyph">⚡</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="M12 2v4" /><path d="M12 18v4" />
+                    <path d="M4.93 4.93l2.83 2.83" /><path d="M16.24 16.24l2.83 2.83" />
+                    <path d="M2 12h4" /><path d="M18 12h4" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
                   <span>Decision Engine</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Transactions' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Transactions'); onNavigate('transactions'); }}
                 >
-                  <span className="side-dot-glyph">■</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <rect width="20" height="14" x="2" y="5" rx="2" />
+                    <line x1="2" y1="10" x2="22" y2="10" />
+                  </svg>
                   <span>Transactions</span>
                 </button>
                 <button
                   className={`dash-side-btn ${activeTab === 'Exceptions' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Exceptions'); onNavigate('exceptions'); }}
                 >
-                  <span className="side-dot-glyph">▲</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
                   <span>Exceptions</span>
                   <span className="dash-badge-count">12</span>
                 </button>
@@ -228,7 +244,11 @@ export default function HomeHero({ onNavigate }) {
                   className={`dash-side-btn ${activeTab === 'Batch' ? 'active' : ''}`}
                   onClick={(e) => { e.stopPropagation(); setActiveTab('Batch'); onNavigate('batch'); }}
                 >
-                  <span className="side-dot-glyph">●</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="M10 2v7.31" /><path d="M14 9.3V2" />
+                    <path d="M8.5 2h7" /><path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+                    <path d="M5.52 16h12.96" />
+                  </svg>
                   <span>Batch Simulator</span>
                 </button>
 

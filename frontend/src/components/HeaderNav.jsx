@@ -1,6 +1,63 @@
 import { useState, useEffect } from 'react';
 import { getExceptions } from '../api';
 
+const NavIcons = {
+  home: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  ),
+  overview: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10" />
+      <line x1="12" y1="20" x2="12" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="14" />
+    </svg>
+  ),
+  transactions: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="14" x="2" y="5" rx="2" />
+      <line x1="2" y1="10" x2="22" y2="10" />
+    </svg>
+  ),
+  ai_decision: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2v4" />
+      <path d="M12 18v4" />
+      <path d="M4.93 4.93l2.83 2.83" />
+      <path d="M16.24 16.24l2.83 2.83" />
+      <path d="M2 12h4" />
+      <path d="M18 12h4" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ),
+  audit: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+  ),
+  exceptions: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  ),
+  batch: (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 2v7.31" />
+      <path d="M14 9.3V2" />
+      <path d="M8.5 2h7" />
+      <path d="M14 9.3a6.5 6.5 0 1 1-4 0" />
+      <path d="M5.52 16h12.96" />
+    </svg>
+  ),
+};
+
 const NAV_TABS = [
   { id: 'home',         label: 'Home' },
   { id: 'overview',     label: 'Overview' },
@@ -56,7 +113,7 @@ export default function HeaderNav({ activePage, onNavigate }) {
           </div>
         </div>
 
-        {/* Center: Desktop Navigation Pill Cluster */}
+        {/* Center: Desktop Navigation Pill Cluster with Vector Icons */}
         <nav className="nav-pill-cluster desktop-nav">
           {NAV_TABS.map((tab) => {
             const isActive = activePage === tab.id;
@@ -66,6 +123,7 @@ export default function HeaderNav({ activePage, onNavigate }) {
                 className={`nav-pill-btn ${isActive ? 'active' : ''}`}
                 onClick={() => handleNavClick(tab.id)}
               >
+                <span className="nav-icon-wrapper">{NavIcons[tab.id]}</span>
                 <span>{tab.label}</span>
                 {tab.id === 'exceptions' && exceptionCount > 0 && (
                   <span className="nav-alert-pill">{exceptionCount}</span>
@@ -112,7 +170,7 @@ export default function HeaderNav({ activePage, onNavigate }) {
                   className={`mobile-nav-item ${isActive ? 'active' : ''}`}
                   onClick={() => handleNavClick(tab.id)}
                 >
-                  <span className="mobile-nav-glyph">◆</span>
+                  <span className="mobile-nav-icon">{NavIcons[tab.id]}</span>
                   <span className="mobile-nav-label">{tab.label}</span>
                   {tab.id === 'exceptions' && exceptionCount > 0 && (
                     <span className="nav-alert-pill">{exceptionCount}</span>

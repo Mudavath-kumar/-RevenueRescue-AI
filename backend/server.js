@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const axios = require('axios');
 
 const app = express();
 
@@ -27,16 +28,52 @@ app.use('/api/exceptions', require('./routes/exceptions'));
 app.use('/api/razorpay', require('./routes/razorpay'));
 app.use('/api/ml', require('./routes/ml'));
 
-// Health check
+// ─── Health Check ──────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), service: 'RevenueRescue AI' });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    service: 'RevenueRescue AI Backend',
+    uptime: Math.floor(process.uptime()) + 's'
+  });
 });
 
-// Global error handler
+// ─── Keep-Alive Ping (prevents Render free tier sleep) ─────────────────────
+// External cron (cron-job.org) hits GET /ping every 14 minutes.
+// This endpoint also pings the ML service so BOTH services stay warm.
+app.get('/ping', async (req, res) => {
+  const results = { backend: 'awake', ml: 'unknown', ts: new Date().toISOString() };
+
+  if (process.env.ML_SERVICE_URL) {
+    try {
+      await axios.get(`${process.env.ML_SERVICE_URL}/health`, { timeout: 5000 });
+      results.ml = 'awake';
+    } catch (_) {
+      results.ml = 'unreachable';
+    }
+  }
+
+  res.json(results);
+});
+
+// ─── Global Error Handler ───────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
+
+// ─── Self-Ping every 14 minutes in production to prevent Render spin-down ──
+if (process.env.NODE_ENV === 'production' && process.env.RENDER_EXTERNAL_URL) {
+  const PING_INTERVAL = 14 * 60 * 1000; // 14 minutes
+  setInterval(async () => {
+    try {
+      await axios.get(`${process.env.RENDER_EXTERNAL_URL}/ping`, { timeout: 10000 });
+      console.log(`[keep-alive] Self-pinged at ${new Date().toISOString()}`);
+    } catch (e) {
+      console.warn('[keep-alive] Self-ping failed:', e.message);
+    }
+  }, PING_INTERVAL);
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './index.css';
 import HeaderNav from './components/HeaderNav';
 import RescueCopilot from './components/RescueCopilot';
+import HomeHero from './pages/HomeHero';
 import Overview from './pages/Overview';
 import TransactionExplorer from './pages/TransactionExplorer';
 import AIDecisionView from './pages/AIDecisionView';
@@ -10,6 +11,7 @@ import Exceptions from './pages/Exceptions';
 import BatchEvaluation from './pages/BatchEvaluation';
 
 const PAGES = {
+  home: HomeHero,
   overview: Overview,
   transactions: TransactionExplorer,
   ai_decision: AIDecisionView,
@@ -19,10 +21,10 @@ const PAGES = {
 };
 
 export default function App() {
-  const [activePage, setActivePage] = useState('overview');
+  const [activePage, setActivePage] = useState('home');
   const [selectedTxnId, setSelectedTxnId] = useState(null);
 
-  const PageComponent = PAGES[activePage] || Overview;
+  const PageComponent = PAGES[activePage] || HomeHero;
 
   const navigateTo = (page, txnId = null) => {
     setActivePage(page);
@@ -31,12 +33,12 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${activePage === 'home' ? 'is-home-page' : ''}`}>
       {/* Top Floating Command Navigation Bar */}
       <HeaderNav activePage={activePage} onNavigate={navigateTo} />
 
       {/* Main Responsive Canvas */}
-      <main className="content-container">
+      <main className={activePage === 'home' ? 'hero-main-container' : 'content-container'}>
         <PageComponent
           onNavigate={navigateTo}
           selectedTxnId={selectedTxnId}

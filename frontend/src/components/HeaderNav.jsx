@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getExceptions } from '../api';
 
 const NAV_TABS = [
+  { id: 'home',         label: 'Home', icon: '✦' },
   { id: 'overview',     label: 'Overview', icon: '📊' },
   { id: 'transactions', label: 'Transactions', icon: '💳' },
   { id: 'ai_decision',  label: 'Decision Engine', icon: '⚡' },
@@ -33,7 +34,7 @@ export default function HeaderNav({ activePage, onNavigate }) {
     <header className="top-nav-bar">
       <div className="top-nav-container">
         {/* Left: Custom Geometric Brand Mark */}
-        <div className="brand-cluster" onClick={() => onNavigate('overview')}>
+        <div className="brand-cluster" onClick={() => onNavigate('home')}>
           <div className="brand-logo-mark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -85,16 +86,19 @@ export default function HeaderNav({ activePage, onNavigate }) {
           })}
         </nav>
 
-        {/* Right: Live Engine Beacon & Environment */}
+        {/* Right: Live Engine Beacon & Launch Button */}
         <div className="nav-utilities">
           <div className="status-indicator-pill">
             <span className="pulse-dot" />
             <span className="status-label">Engine Active</span>
           </div>
 
-          <div className="env-badge">
-            Razorpay Testnet
-          </div>
+          <button
+            className="btn btn-primary btn-sm nav-cta-btn"
+            onClick={() => onNavigate('ai_decision')}
+          >
+            Launch App
+          </button>
 
           {/* Mobile Hamburger Toggle Button */}
           <button

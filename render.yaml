@@ -1,44 +1,43 @@
 services:
   # ─────────────────────────────────────────────────────────────────────────────
-  # 1. ML Microservice (Python / FastAPI)
-  #    Endpoint: https://revenuerescue-ml.onrender.com
+  # 1. ML Microservice (Python / FastAPI) — FREE TIER
   # ─────────────────────────────────────────────────────────────────────────────
   - type: web
     name: revenuerescue-ml
     runtime: python
+    plan: free
     rootDir: ml-service
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
-    healthCheckPath: /health
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # 2. Backend API (Node.js / Express)
-  #    Endpoint: https://revenuerescue-api.onrender.com
+  # 2. Backend API (Node.js / Express) — FREE TIER
   # ─────────────────────────────────────────────────────────────────────────────
   - type: web
     name: revenuerescue-api
     runtime: node
+    plan: free
     rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: "5000"
       - key: MONGODB_URI
-        sync: false   # ← Set manually in Render dashboard (keep secret)
-      - key: GEMINI_API_KEY
-        sync: false   # ← Set manually in Render dashboard (keep secret)
+        sync: false
       - key: RAZORPAY_KEY_ID
-        sync: false   # ← Set manually in Render dashboard (keep secret)
+        sync: false
       - key: RAZORPAY_KEY_SECRET
-        sync: false   # ← Set manually in Render dashboard (keep secret)
+        sync: false
       - key: ML_SERVICE_URL
         value: https://revenuerescue-ml.onrender.com
+      - key: RENDER_EXTERNAL_URL
+        value: https://revenuerescue-api.onrender.com
       - key: SIMULATOR_SEED
         value: "42"
       - key: MAX_RETRIES
@@ -53,8 +52,7 @@ services:
         value: "25"
 
   # ─────────────────────────────────────────────────────────────────────────────
-  # 3. Frontend UI (React / Vite → Render Static Site)
-  #    Endpoint: https://revenuerescue.onrender.com
+  # 3. Frontend UI (React / Vite — Static Site) — ALWAYS FREE
   # ─────────────────────────────────────────────────────────────────────────────
   - type: web
     name: revenuerescue-frontend
@@ -62,10 +60,7 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: no-cache
+    pullRequestPreviewsEnabled: false
     routes:
       - type: rewrite
         source: /*

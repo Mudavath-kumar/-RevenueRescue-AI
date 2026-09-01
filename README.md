@@ -19,6 +19,8 @@ RevenueRescue AI is an intelligent, policy-gated revenue recovery engine that de
 | **Compliant Escalation** | High-value and policy-blocked transactions routed to human triage queue with 1-click resolution. |
 | **Immutable Audit Trail** | Append-only event log tracking every actor (`AI_AGENT`, `POLICY_ENGINE`, `PAYMENT_SIMULATOR`, `HUMAN`). |
 | **Razorpay Integration** | Official Standard Web Checkout modal with HMAC-SHA256 signature verification. |
+| **Interactive AI Copilot** | Floating natural language assistant answering operator questions with real-time ledger context. |
+| **Visual Pipeline Trace** | 5-stage real-time execution trace visualizer (Signals → ML → Agent → Policy → Closed-Loop Result). |
 
 ---
 
@@ -27,12 +29,13 @@ RevenueRescue AI is an intelligent, policy-gated revenue recovery engine that de
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │             RescueFlow UI (React 18 + Vite)                │
+│    (Overview, Transactions, Decision Engine, Copilot)       │
 └──────────────────────────────┬──────────────────────────────┘
                                │ REST APIs (Port 3000 -> 5000)
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                  Express.js Backend API                     │
-│         (Routes: recovery, agent, razorpay, batch)          │
+│         (Routes: recovery, agent, razorpay, copilot)        │
 └───┬──────────────────────────┬──────────────────────────┬───┘
     │                          │                          │
     ▼                          ▼                          ▼
@@ -94,16 +97,22 @@ Visit: **`http://localhost:3000`**
 1. Filter transactions by status (`FAILED`), payment method (`UPI`, `CARD`), or failure reason.
 2. Click any transaction ID (e.g. `TXN001741`) to open its deep-dive decision breakdown.
 
-### Demo 3 — AI Decision Engine & Razorpay Checkout (`Decision Engine`)
-1. Click **Analyze** on `TXN001741` to see customer history, ML recovery probability (74.7%), and policy checks.
-2. Click **🚀 Run AI Recovery Agent** to execute the end-to-end autonomous recovery workflow.
-3. Click **💳 Live Razorpay Checkout Test** to open the real Razorpay standard checkout modal and verify HMAC-SHA256 signatures.
+### Demo 3 — AI Decision Engine & Visual Pipeline Trace (`Decision Engine`)
+1. Click **Analyze Signals** on `TXN001741` to see customer history, ML recovery probability (74.7%), and policy checks.
+2. Point out the **Multi-Stage Agent Pipeline Trace** (Signals Ingestion → ML Inference → AI Synthesis → Policy Gate → Result).
+3. Click **🚀 Run AI Recovery Agent** to execute the end-to-end autonomous recovery workflow.
+4. Click **💳 Live Razorpay Checkout Test** to open the real Razorpay standard checkout modal and verify HMAC-SHA256 signatures.
 
-### Demo 4 — Exceptions Queue & Human Triage (`Exceptions`)
+### Demo 4 — Interactive RescueCopilot AI (`Bottom-Right Drawer`)
+1. Click the **`✨ AI Copilot`** launcher in the bottom right.
+2. Click quick chips like **"🛡️ Explain policy safety rules"** or ask *"Why was TXN001741 retried?"*.
+3. Showcase natural language AI explanations backed by live database metrics.
+
+### Demo 5 — Exceptions Queue & Human Triage (`Exceptions`)
 1. Inspect the **Human Escalations** (high-value payments > ₹5,000) and **Policy Blocked** queues.
 2. Click **Approve** or **Dismiss** to demonstrate Human-in-the-Loop exception handling with operator audit logging.
 
-### Demo 5 — 10,000-Transaction Batch Benchmark (`Batch Simulator`)
+### Demo 6 — 10,000-Transaction Batch Benchmark (`Batch Simulator`)
 1. Select batch size **10,000 transactions** and mode **Both (Baseline vs AI)**.
 2. Click **Run Batch Evaluation**.
 3. Review the **Held-Out ML Benchmark Panel** ($83.36\%$ ROC-AUC) and the **Incremental Revenue Recovered** comparison proving financial ROI.
@@ -134,5 +143,6 @@ Evaluated on **2,250 held-out test samples** (15% split) unseen during training:
 ## 🛠️ Technology Stack
 - **Frontend:** React 18, Vite, Recharts, Custom Minimal Design System
 - **Backend:** Node.js, Express.js, Mongoose, Razorpay Node SDK, UUID, Crypto
+- **AI & NLP:** Google Gemini 2.5 Flash (`@google/generative-ai`)
 - **Machine Learning:** Python, FastAPI, scikit-learn, Pandas, NumPy, Joblib
 - **Database:** MongoDB Atlas

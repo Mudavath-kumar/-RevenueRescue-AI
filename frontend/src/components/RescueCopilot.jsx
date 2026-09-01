@@ -86,25 +86,33 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
       <button
         className={`copilot-floating-btn ${isOpen ? 'active' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
-        title="Open RescueCopilot AI"
-        aria-label="Open RescueCopilot AI"
+        title="Open RescueCopilot AI Assistant"
+        aria-label="Open RescueCopilot AI Assistant"
       >
         <span className="copilot-btn-icon">✨</span>
         <span className="copilot-btn-label">AI Copilot</span>
         <span className="copilot-btn-dot" />
       </button>
 
-      {/* Copilot Drawer / Popover */}
+      {/* Backdrop on mobile */}
+      {isOpen && (
+        <div className="copilot-backdrop" onClick={() => setIsOpen(false)} />
+      )}
+
+      {/* Copilot Drawer / Bottom Sheet */}
       {isOpen && (
         <div className="copilot-drawer animate-in">
+          {/* Drag Handle Indicator (for mobile sheet view) */}
+          <div className="copilot-sheet-handle" />
+
           {/* Header */}
           <div className="copilot-header">
             <div className="copilot-header-left">
               <div className="copilot-avatar">✨</div>
               <div>
-                <div className="copilot-title">RescueCopilot</div>
+                <div className="copilot-title">RescueCopilot AI</div>
                 <div className="copilot-status">
-                  <span className="pulse-dot" /> Active FinTech Intelligence
+                  <span className="pulse-dot" /> Autonomous Intelligence
                 </div>
               </div>
             </div>
@@ -172,7 +180,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Prompts */}
+          {/* Quick Prompts Carousel */}
           <div className="copilot-quick-prompts">
             {QUICK_PROMPTS.map((qp, i) => (
               <button
@@ -195,7 +203,7 @@ export default function RescueCopilot({ selectedTxnId, onNavigate }) {
             }}
           >
             <input
-              placeholder="Ask about payments, limits, TXN IDs..."
+              placeholder="Ask about payments, policy limits, TXN IDs..."
               value={input}
               onChange={e => setInput(e.target.value)}
               disabled={loading}

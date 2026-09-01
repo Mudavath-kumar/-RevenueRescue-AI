@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { getExceptions } from '../api';
 
 const NAV_TABS = [
-  { id: 'overview',     label: 'Overview' },
-  { id: 'transactions', label: 'Transactions' },
-  { id: 'ai_decision',  label: 'Decision Engine' },
-  { id: 'audit',        label: 'Audit Trail' },
-  { id: 'exceptions',   label: 'Exceptions' },
-  { id: 'batch',        label: 'Batch Simulator' },
+  { id: 'overview',     label: 'Overview', icon: '📊' },
+  { id: 'transactions', label: 'Transactions', icon: '💳' },
+  { id: 'ai_decision',  label: 'Decision Engine', icon: '⚡' },
+  { id: 'audit',        label: 'Audit Trail', icon: '📋' },
+  { id: 'exceptions',   label: 'Exceptions', icon: '⚠️' },
+  { id: 'batch',        label: 'Batch Simulator', icon: '🧪' },
 ];
 
-export default function HeaderNav({ activePage, onNavigate, onQuickSearch }) {
+export default function HeaderNav({ activePage, onNavigate }) {
   const [exceptionCount, setExceptionCount] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     getExceptions()
@@ -23,31 +24,36 @@ export default function HeaderNav({ activePage, onNavigate, onQuickSearch }) {
       .catch(() => {});
   }, [activePage]);
 
+  const handleNavClick = (tabId) => {
+    onNavigate(tabId);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <header className="top-nav-bar">
       <div className="top-nav-container">
         {/* Left: Custom Geometric Brand Mark */}
         <div className="brand-cluster" onClick={() => onNavigate('overview')}>
           <div className="brand-logo-mark">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M12 2L2 7L12 12L22 7L12 2Z"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
               <path
                 d="M2 17L12 22L22 17"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
               <path
                 d="M2 12L12 17L22 12"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -55,20 +61,21 @@ export default function HeaderNav({ activePage, onNavigate, onQuickSearch }) {
           </div>
           <div className="brand-text">
             <span className="brand-name">RescueFlow</span>
-            <span className="brand-badge">Autonomous</span>
+            <span className="brand-badge">Autonomous AI</span>
           </div>
         </div>
 
-        {/* Center: Sleek Segmented Navigation Pills */}
-        <nav className="nav-pill-cluster">
+        {/* Center: Desktop Navigation Pill Cluster */}
+        <nav className="nav-pill-cluster desktop-nav">
           {NAV_TABS.map((tab) => {
             const isActive = activePage === tab.id;
             return (
               <button
                 key={tab.id}
                 className={`nav-pill-btn ${isActive ? 'active' : ''}`}
-                onClick={() => onNavigate(tab.id)}
+                onClick={() => handleNavClick(tab.id)}
               >
+                <span className="nav-tab-icon">{tab.icon}</span>
                 <span>{tab.label}</span>
                 {tab.id === 'exceptions' && exceptionCount > 0 && (
                   <span className="nav-alert-pill">{exceptionCount}</span>
@@ -88,8 +95,41 @@ export default function HeaderNav({ activePage, onNavigate, onQuickSearch }) {
           <div className="env-badge">
             Razorpay Testnet
           </div>
+
+          {/* Mobile Hamburger Toggle Button */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Navigation Menu"
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Slide-Down Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="mobile-nav-drawer animate-in">
+          <div className="mobile-nav-grid">
+            {NAV_TABS.map((tab) => {
+              const isActive = activePage === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  className={`mobile-nav-item ${isActive ? 'active' : ''}`}
+                  onClick={() => handleNavClick(tab.id)}
+                >
+                  <span className="mobile-nav-icon">{tab.icon}</span>
+                  <span className="mobile-nav-label">{tab.label}</span>
+                  {tab.id === 'exceptions' && exceptionCount > 0 && (
+                    <span className="nav-alert-pill">{exceptionCount}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

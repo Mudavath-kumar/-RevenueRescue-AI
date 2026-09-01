@@ -118,7 +118,21 @@ export default function RazorpayCheckoutModal({ transaction, onSuccess, onClose 
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-          <span style={{ fontSize: 24 }}>💳</span>
+          <div style={{
+            width: 32,
+            height: 32,
+            borderRadius: 8,
+            background: 'rgba(37, 99, 235, 0.1)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--accent-blue)'
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <rect width="20" height="14" x="2" y="5" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+          </div>
           <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Razorpay Test Checkout</h3>
         </div>
 
@@ -149,9 +163,13 @@ export default function RazorpayCheckoutModal({ transaction, onSuccess, onClose 
             padding: '10px 14px',
             borderRadius: 8,
             fontSize: 12,
-            marginBottom: 16
+            marginBottom: 16,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8
           }}>
-            ⚠️ {error}
+            <span style={{ fontWeight: 800 }}>!</span>
+            <span>{error}</span>
           </div>
         )}
 
@@ -167,7 +185,7 @@ export default function RazorpayCheckoutModal({ transaction, onSuccess, onClose 
             fontWeight: 600,
             marginBottom: 16
           }}>
-            ✅ Payment of {formatINR(transaction.amount)} successfully recovered & verified!
+            <span style={{ fontWeight: 800, marginRight: 6 }}>✓</span> Payment of {formatINR(transaction.amount)} successfully recovered & verified!
             <div style={{ marginTop: 12 }}>
               <button className="btn btn-outline btn-sm" onClick={onClose}>Close</button>
             </div>
@@ -188,8 +206,12 @@ export default function RazorpayCheckoutModal({ transaction, onSuccess, onClose 
           </div>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: 14, fontSize: 11, color: 'var(--text-muted)' }}>
-          🔒 Razorpay Standard Web Checkout (Test Mode)
+        <div style={{ textAlign: 'center', marginTop: 14, fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          <span>Razorpay Standard Web Checkout (Test Mode)</span>
         </div>
       </div>
     </div>

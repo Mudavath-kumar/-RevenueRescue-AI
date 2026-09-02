@@ -2239,6 +2239,222 @@ input:focus, select:focus {
   color: #FFFFFF;
 }
 
+/* ── Interactive ROI Calculator ─────────────────────────────────── */
+.home-calc-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 32px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.calc-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.calc-slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.calc-slider-val {
+  font-family: var(--font-mono);
+  color: var(--accent-blue);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.calc-range-input {
+  width: 100%;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
+  height: 6px;
+  border-radius: 3px;
+}
+
+.calc-results-box {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  color: #FFFFFF;
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: var(--shadow-md);
+}
+
+.calc-res-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.calc-res-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  padding-top: 4px;
+}
+
+.calc-res-label {
+  font-size: 12.5px;
+  color: #94A3B8;
+}
+
+.calc-res-num {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.calc-res-num.highlight {
+  color: #34D399;
+  font-size: 22px;
+}
+
+/* ── Matrix & Comparison Tables ───────────────────────────────── */
+.home-table-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+.home-pro-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  text-align: left;
+  min-width: 650px;
+}
+
+.home-pro-table th {
+  background: #F8FAFC;
+  padding: 12px 14px;
+  font-weight: 800;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+
+.home-pro-table td {
+  padding: 14px;
+  border-bottom: 1px solid #F1F5F9;
+  color: var(--text-secondary);
+}
+
+.home-pro-table tr:last-child td {
+  border-bottom: none;
+}
+
+.home-pro-table tr:hover td {
+  background: #FAFAFC;
+}
+
+.table-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.table-tag.blue { background: #EFF6FF; color: #2563EB; border: 1px solid #DBEAFE; }
+.table-tag.green { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+.table-tag.yellow { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.table-tag.purple { background: #F5F3FF; color: #7C3AED; border: 1px solid #DDD6FE; }
+
+/* ── Guardrails Grid ─────────────────────────────────────────── */
+.guardrail-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.guardrail-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guardrail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-bright);
+}
+
+.guardrail-icon-sq {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--accent-blue);
+  font-size: 13px;
+}
+
+.guardrail-heading {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.guardrail-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.guardrail-limit {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--accent-blue);
+  background: #EFF6FF;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: auto;
+}
+
 /* ── Bottom Launch CTA Banner ─────────────────────────────────── */
 .home-bottom-banner {
   width: 100%;

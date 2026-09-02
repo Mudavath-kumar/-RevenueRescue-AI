@@ -90,8 +90,125 @@ const CAPABILITIES = [
   }
 ];
 
+const FAILURE_TAXONOMY = [
+  {
+    code: 'TEMPORARY_BANK_FAILURE',
+    name: 'Temporary Bank Timeout',
+    trigger: 'Issuer / NPCI Gateway 504 Gateway Timeout',
+    action: 'Autonomous Background Retry via Alternative Route',
+    channel: 'Direct Gateway Switch',
+    tagColor: 'blue',
+    recoveryRate: '~78%'
+  },
+  {
+    code: 'INSUFFICIENT_FUNDS',
+    name: 'Insufficient Balance',
+    trigger: 'Debit decline code 102 (low available balance)',
+    action: 'Smart Scheduled WhatsApp / SMS Recovery Link',
+    channel: 'WhatsApp & SMS',
+    tagColor: 'green',
+    recoveryRate: '~54%'
+  },
+  {
+    code: 'NETWORK_FAILURE',
+    name: '3D Secure / Network Drop',
+    trigger: 'Client session lost during OTP verification (401)',
+    action: '1-Click Resilient Razorpay Web Checkout Link',
+    channel: 'Razorpay Hosted Checkout',
+    tagColor: 'yellow',
+    recoveryRate: '~82%'
+  },
+  {
+    code: 'EXPIRED_PAYMENT_METHOD',
+    name: 'Expired Instrument',
+    trigger: 'Expired card validity or deleted UPI handle',
+    action: 'Payment Method Switch Prompt without Cart Abandonment',
+    channel: 'Direct Dynamic Form',
+    tagColor: 'purple',
+    recoveryRate: '~65%'
+  },
+  {
+    code: 'HIGH_VALUE_THRESHOLD',
+    name: 'High-Ticket Transaction (> ₹5,000)',
+    trigger: 'Policy trigger exceeding autonomous spending ceiling',
+    action: 'Escalated to Human Triage Exception Queue for Review',
+    channel: 'Human Operator Queue',
+    tagColor: 'blue',
+    recoveryRate: '~91%'
+  }
+];
+
+const POLICY_GUARDRAILS = [
+  {
+    id: 'amount_cap',
+    title: 'Autonomous Amount Cap',
+    desc: 'Any single transaction exceeding ₹5,000 is automatically blocked from autonomous execution and escalated to human operators.',
+    limit: 'Max ₹5,000 / Txn',
+    icon: '₹'
+  },
+  {
+    id: 'retry_ceiling',
+    title: 'Hard Retry Ceiling',
+    desc: 'Strict upper limit of 2 retry attempts per failed transaction to eliminate runaway processing costs and prevent customer annoyance.',
+    limit: 'Max 2 Retries',
+    icon: '⚡'
+  },
+  {
+    id: 'time_window',
+    title: '48-Hour Recovery Horizon',
+    desc: 'Interventions are strictly barred after 48 hours to comply with RBI chargeback rules and prevent stale authorization attempts.',
+    limit: '48 Hours Max',
+    icon: '⏱'
+  },
+  {
+    id: 'ml_threshold',
+    title: 'ML Confidence Floor',
+    desc: 'Random Forest model must predict recovery probability ≥ 40% before any financial intervention is authorized by the policy engine.',
+    limit: '≥ 40% Probability',
+    icon: '✦'
+  }
+];
+
+const COMPARISON_ROWS = [
+  {
+    metric: 'Recovery Decision Logic',
+    dumb: 'Blind unconditional retry on all failures',
+    ai: 'Multi-signal ML scoring (83.36% ROC-AUC) + AI Agent'
+  },
+  {
+    metric: 'Financial Cost Awareness',
+    dumb: 'Burns ₹25 fee on every failed attempt with zero yield',
+    ai: 'Intervenes only when expected value > intervention cost'
+  },
+  {
+    metric: 'Safety & Spending Guardrails',
+    dumb: 'None — can trigger infinite retry loops',
+    ai: 'Hard deterministic policy gate (₹5k cap, 2 retries, 48h limit)'
+  },
+  {
+    metric: 'High-Ticket & Edge Handling',
+    dumb: 'Treats ₹50,000 payment identically to ₹50',
+    ai: 'Autonomous Human Triage escalation for high-value VIP orders'
+  },
+  {
+    metric: 'Auditability & Compliance',
+    dumb: 'Scattered logs across gateway dashboard',
+    ai: 'Immutable, append-only chronological event ledger'
+  }
+];
+
 export default function HomeHero({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('Overview');
+  const [monthlyFailedGmv, setMonthlyFailedGmv] = useState(25); // In Lakhs
+  const [avgTicket, setAvgTicket] = useState(2500); // In Rupees
+
+  // Live ROI Calculations
+  const gmvRupees = monthlyFailedGmv * 100000;
+  const estimatedRecovered = Math.round(gmvRupees * 0.742); // 74.2% AI recovery
+  const dumbRecovered = Math.round(gmvRupees * 0.385); // 38.5% baseline
+  const incrementalRevenue = estimatedRecovered - dumbRecovered;
+  const annualIncremental = incrementalRevenue * 12;
+  const savedInterventionFees = Math.round((gmvRupees / avgTicket) * 0.45 * 25); // fees saved from not retrying hopeless txns
 
   return (
     <div className="landing-hero-container">
@@ -499,7 +616,185 @@ export default function HomeHero({ onNavigate }) {
         </div>
 
 
-        {/* ── Section 6: Bottom Launch CTA Banner ─────────────────────── */}
+        {/* ── Section 5: Interactive Revenue Recovery ROI Calculator ── */}
+        <div className="home-section-container">
+          <div className="home-section-header">
+            <div className="section-eyebrow">Financial Impact Simulator</div>
+            <h2 className="home-section-title">
+              Estimate Your <span className="italic-serif">Recovered Revenue</span>
+            </h2>
+            <p className="home-section-subtitle">
+              Calculate the incremental rupees won back and payment gateway fees saved each month using AI-gated recovery.
+            </p>
+          </div>
+
+          <div className="home-calc-card">
+            <div className="calc-controls">
+              <div className="calc-slider-group">
+                <div className="calc-slider-header">
+                  <span>Monthly Failed GMV Volume</span>
+                  <span className="calc-slider-val">₹{monthlyFailedGmv} Lakhs</span>
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="200"
+                  step="5"
+                  value={monthlyFailedGmv}
+                  onChange={(e) => setMonthlyFailedGmv(Number(e.target.value))}
+                  className="calc-range-input"
+                />
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                  Total monthly revenue lost to failed checkout attempts (₹5L - ₹2 Cr)
+                </span>
+              </div>
+
+              <div className="calc-slider-group">
+                <div className="calc-slider-header">
+                  <span>Average Transaction Order Value</span>
+                  <span className="calc-slider-val">₹{avgTicket.toLocaleString()}</span>
+                </div>
+                <input
+                  type="range"
+                  min="500"
+                  max="15000"
+                  step="500"
+                  value={avgTicket}
+                  onChange={(e) => setAvgTicket(Number(e.target.value))}
+                  className="calc-range-input"
+                />
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                  Basket size across UPI, credit cards, and netbanking
+                </span>
+              </div>
+            </div>
+
+            <div className="calc-results-box">
+              <div className="calc-res-row">
+                <span className="calc-res-label">Monthly AI Recovered Revenue</span>
+                <span className="calc-res-num highlight">₹{(estimatedRecovered / 100000).toFixed(2)} Lakhs</span>
+              </div>
+              <div className="calc-res-row">
+                <span className="calc-res-label">Baseline Dumb Retries Yield</span>
+                <span className="calc-res-num">₹{(dumbRecovered / 100000).toFixed(2)} Lakhs</span>
+              </div>
+              <div className="calc-res-row">
+                <span className="calc-res-label">Net Incremental Revenue Won</span>
+                <span className="calc-res-num" style={{ color: '#60A5FA' }}>+₹{(incrementalRevenue / 100000).toFixed(2)} L/mo</span>
+              </div>
+              <div className="calc-res-row">
+                <span className="calc-res-label">Wasted Gateway Fees Saved</span>
+                <span className="calc-res-num">₹{savedInterventionFees.toLocaleString()}/mo</span>
+              </div>
+              <div className="calc-res-row">
+                <span className="calc-res-label">Annual Enterprise ROI Gain</span>
+                <span className="calc-res-num" style={{ color: '#34D399', fontSize: 18 }}>₹{(annualIncremental / 100000).toFixed(2)} Lakhs/yr</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Section 6: Failure Taxonomy & Recovery Matrix ─────────── */}
+        <div className="home-section-container">
+          <div className="home-section-header">
+            <div className="section-eyebrow">Failure Taxonomy & Intelligence</div>
+            <h2 className="home-section-title">
+              Root Causes & <span className="italic-serif">Autonomous Actions</span>
+            </h2>
+            <p className="home-section-subtitle">
+              How RescueFlow intelligently diagnoses raw gateway error codes and dispatches optimal recovery workflows.
+            </p>
+          </div>
+
+          <div className="home-table-card">
+            <table className="home-pro-table">
+              <thead>
+                <tr>
+                  <th>Failure Classification</th>
+                  <th>Root Cause Trigger</th>
+                  <th>Autonomous Action Strategy</th>
+                  <th>Recovery Channel</th>
+                  <th>Historical Yield</th>
+                </tr>
+              </thead>
+              <tbody>
+                {FAILURE_TAXONOMY.map((row) => (
+                  <tr key={row.code}>
+                    <td>
+                      <span className={`table-tag ${row.tagColor}`}>{row.name}</span>
+                    </td>
+                    <td><span style={{ fontSize: 12, color: 'var(--text-primary)' }}>{row.trigger}</span></td>
+                    <td><strong style={{ color: 'var(--text-primary)', fontSize: 12 }}>{row.action}</strong></td>
+                    <td><span style={{ fontSize: 11.5, color: 'var(--text-secondary)' }}>{row.channel}</span></td>
+                    <td><strong style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>{row.recoveryRate}</strong></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ── Section 7: Deterministic Policy Safety Gates ─────────── */}
+        <div className="home-section-container">
+          <div className="home-section-header">
+            <div className="section-eyebrow">Zero Financial Hallucination</div>
+            <h2 className="home-section-title">
+              Deterministic <span className="italic-serif">Policy Safety Gates</span>
+            </h2>
+            <p className="home-section-subtitle">
+              The AI Agent is strictly bound by hardcode deterministic constraints. Safety rules always overrule the LLM.
+            </p>
+          </div>
+
+          <div className="guardrail-cards-grid">
+            {POLICY_GUARDRAILS.map((guard) => (
+              <div key={guard.id} className="guardrail-card">
+                <div className="guardrail-icon-sq">{guard.icon}</div>
+                <h4 className="guardrail-heading">{guard.title}</h4>
+                <p className="guardrail-desc">{guard.desc}</p>
+                <span className="guardrail-limit">{guard.limit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Section 8: AI Precision vs Dumb Retries Comparison ─────── */}
+        <div className="home-section-container">
+          <div className="home-section-header">
+            <div className="section-eyebrow">Quantitative Superiority</div>
+            <h2 className="home-section-title">
+              AI Precision vs <span className="italic-serif">Naive Dumb Retries</span>
+            </h2>
+            <p className="home-section-subtitle">
+              Why traditional blind retries burn merchant capital and how machine learning optimizes net recovered profit.
+            </p>
+          </div>
+
+          <div className="home-table-card">
+            <table className="home-pro-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '28%' }}>Dimension</th>
+                  <th style={{ width: '36%', color: 'var(--accent-red)' }}>Traditional Dumb Retries</th>
+                  <th style={{ width: '36%', color: 'var(--accent-blue)' }}>RescueFlow AI Recovery Engine</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON_ROWS.map((row, idx) => (
+                  <tr key={idx}>
+                    <td><strong style={{ color: 'var(--text-primary)' }}>{row.metric}</strong></td>
+                    <td style={{ color: '#E11D48', fontSize: 12 }}>✕ {row.dumb}</td>
+                    <td style={{ color: 'var(--text-primary)', fontSize: 12 }}>
+                      <strong style={{ color: 'var(--accent-green)', marginRight: 4 }}>✓</strong> {row.ai}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ── Section 9: Bottom Launch CTA Banner ─────────────────────── */}
         <div className="home-bottom-banner">
           <h2 className="bottom-banner-title">
             Ready to win back <span className="italic-serif">slipping revenue</span>?

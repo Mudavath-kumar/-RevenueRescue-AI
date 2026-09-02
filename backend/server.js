@@ -1,15 +1,20 @@
 require('dotenv').config({ override: true });
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
 const app = express();
 
-// Middleware
+// Security & Standard Middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Managed per route or client header
+  crossOriginEmbedderPolicy: false
+}));
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 app.use(morgan('dev'));
 
 // DB Connection

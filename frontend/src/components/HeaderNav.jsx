@@ -95,22 +95,14 @@ export default function HeaderNav({ activePage, onNavigate }) {
     <>
       <header className="top-nav-bar">
         <div className="top-nav-container">
-          {/* Left: Custom Geometric Brand Mark */}
+          {/* Left: Custom Brand Mark with uploaded logo */}
           <div className="brand-cluster" onClick={() => handleNavClick('home')}>
-            <div className="brand-logo-mark">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <defs>
-                  <linearGradient id="navBrandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#3B82F6" />
-                    <stop offset="100%" stopColor="#10B981" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"
-                  fill="url(#navBrandGrad)"
-                />
-                <circle cx="12" cy="12" r="2" fill="#FFFFFF" />
-              </svg>
+            <div className="brand-logo-mark" style={{ background: 'transparent', boxShadow: 'none', padding: 0 }}>
+              <img
+                src="/logo.png"
+                alt="RescueFlow Logo"
+                style={{ width: 36, height: 36, objectFit: 'contain', borderRadius: 6 }}
+              />
             </div>
             <div className="brand-text">
               <span className="brand-name">RescueFlow</span>

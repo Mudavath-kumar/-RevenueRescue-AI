@@ -158,14 +158,8 @@ export default function HomeHero({ onNavigate }) {
             {/* Top Bar */}
             <div className="dash-top-bar">
               <div className="dash-brand">
-                <div className="dash-logo-sq">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"
-                      fill="#3B82F6"
-                    />
-                    <circle cx="12" cy="12" r="2" fill="#FFFFFF" />
-                  </svg>
+                <div className="dash-logo-sq" style={{ background: 'transparent', padding: 0 }}>
+                  <img src="/logo.png" alt="RescueFlow" style={{ width: 20, height: 20, objectFit: 'contain', borderRadius: 4 }} />
                 </div>
                 <span className="dash-title">RescueFlow</span>
                 <span className="dash-chevron">›</span>
@@ -504,70 +498,6 @@ export default function HomeHero({ onNavigate }) {
           </div>
         </div>
 
-        {/* ── Section 5: Guided 5-Minute Demo Tour ───────────────────── */}
-        <div className="home-tour-card">
-          <div className="tour-content">
-            <div className="section-eyebrow" style={{ color: '#93C5FD' }}>Judge & Evaluator Guide</div>
-            <h2 className="tour-title">5-Minute Live Interactive Demo Script</h2>
-            <p className="tour-subtitle">
-              Follow this sequence to test and evaluate all features across the platform in under 5 minutes:
-            </p>
-
-            <div className="tour-steps-list">
-              <div className="tour-step-item" onClick={() => onNavigate('overview')}>
-                <span className="tour-step-index">1</span>
-                <div>
-                  <strong>Platform Overview:</strong> Inspect live KPIs (₹5.11+ Cr at risk), 7-day trends, and operational funnel.
-                </div>
-              </div>
-
-              <div className="tour-step-item" onClick={() => onNavigate('transactions')}>
-                <span className="tour-step-index">2</span>
-                <div>
-                  <strong>Transaction Explorer:</strong> Filter by failure root cause (Bank Failure) and select <code>TXN001741</code>.
-                </div>
-              </div>
-
-              <div className="tour-step-item" onClick={() => onNavigate('ai_decision')}>
-                <span className="tour-step-index">3</span>
-                <div>
-                  <strong>Decision Engine:</strong> Analyze <code>TXN001741</code>, verify 74.7% ML prediction, and click <em>Run AI Recovery Agent</em>.
-                </div>
-              </div>
-
-              <div className="tour-step-item" onClick={() => onNavigate('exceptions')}>
-                <span className="tour-step-index">4</span>
-                <div>
-                  <strong>Human Triage Queue:</strong> Review payments {'>'} ₹5,000 and click <em>Approve</em> for 1-click operator resolution.
-                </div>
-              </div>
-
-              <div className="tour-step-item" onClick={() => onNavigate('batch')}>
-                <span className="tour-step-index">5</span>
-                <div>
-                  <strong>10k Batch Benchmark:</strong> Run 10,000 transactions comparing AI vs Baseline to measure exact incremental rupees won back.
-                </div>
-              </div>
-            </div>
-
-            <div style={{ marginTop: 24, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <button
-                className="btn hero-primary-btn"
-                style={{ background: '#FFFFFF', color: '#0F172A' }}
-                onClick={() => onNavigate('overview')}
-              >
-                Start Guided Tour →
-              </button>
-              <button
-                className="btn btn-outline"
-                style={{ background: 'transparent', borderColor: 'rgba(255,255,255,0.3)', color: '#FFFFFF' }}
-                onClick={() => onNavigate('batch')}
-              >
-                Run Batch Benchmark
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* ── Section 6: Bottom Launch CTA Banner ─────────────────────── */}
         <div className="home-bottom-banner">

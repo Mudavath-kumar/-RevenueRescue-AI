@@ -100,12 +100,12 @@ Visit: **`http://localhost:3000`**
 ### Demo 3 — AI Decision Engine & Visual Pipeline Trace (`Decision Engine`)
 1. Click **Analyze Signals** on `TXN001741` to see customer history, ML recovery probability (74.7%), and policy checks.
 2. Point out the **Multi-Stage Agent Pipeline Trace** (Signals Ingestion → ML Inference → AI Synthesis → Policy Gate → Result).
-3. Click **🚀 Run AI Recovery Agent** to execute the end-to-end autonomous recovery workflow.
-4. Click **💳 Live Razorpay Checkout Test** to open the real Razorpay standard checkout modal and verify HMAC-SHA256 signatures.
+3. Click **Run AI Recovery Agent** to execute the end-to-end autonomous recovery workflow.
+4. Click **Live Razorpay Checkout Test** to open the real Razorpay standard checkout modal and verify HMAC-SHA256 signatures.
 
 ### Demo 4 — Interactive RescueCopilot AI (`Bottom-Right Drawer`)
-1. Click the **`✨ AI Copilot`** launcher in the bottom right.
-2. Click quick chips like **"🛡️ Explain policy safety rules"** or ask *"Why was TXN001741 retried?"*.
+1. Click the **AI Copilot** launcher in the bottom right.
+2. Click quick chips like **"Explain policy safety rules"** or ask *"Why was TXN001741 retried?"*.
 3. Showcase natural language AI explanations backed by live database metrics.
 
 ### Demo 5 — Exceptions Queue & Human Triage (`Exceptions`)
@@ -132,17 +132,20 @@ Evaluated on **2,250 held-out test samples** (15% split) unseen during training:
 
 ---
 
-## 🛡️ Security & Safety Principles
+## 🛡️ Security & Safety Architecture
 - **Separation of Concerns:** The AI Agent is a decision-support engine; only the deterministic backend policy engine can authorize execution.
 - **Stopping Rules:** Automatic cessation after 2 retries or 48 hours to prevent customer spamming.
-- **Idempotency:** Recovery endpoints guard against duplicate execution on already-recovered transactions.
+- **Idempotency Locks:** Recovery endpoints guard against duplicate execution on already-recovered transactions.
 - **Zero Real-Money Movement:** All executions are safely bounded to simulated payments and Razorpay Test Mode.
+- **Full-Stack Authentication:** MongoDB-backed user registration and login with `bcryptjs` password hashing (10 salt rounds) and cryptographically signed JWT tokens.
+- **Enterprise HTTP Security Headers:** Vercel Edge + Express `helmet` headers (HSTS `max-age=63072000`, CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`).
 
 ---
 
 ## 🛠️ Technology Stack
-- **Frontend:** React 18, Vite, Recharts, Custom Minimal Design System
-- **Backend:** Node.js, Express.js, Mongoose, Razorpay Node SDK, UUID, Crypto
-- **AI & NLP:** Google Gemini 2.5 Flash (`@google/generative-ai`)
+- **Frontend:** React 18, Vite 8, Recharts, Pure Vanilla CSS Design System
+- **Backend:** Node.js, Express.js, Mongoose, Helmet, Razorpay Node SDK, JWT, BcryptJS, UUID, Crypto
+- **Authentication:** MongoDB Atlas User Accounts with JWT Bearer Tokens
+- **AI & NLP:** Google Gemini Flash (`@google/generative-ai`)
 - **Machine Learning:** Python, FastAPI, scikit-learn, Pandas, NumPy, Joblib
-- **Database:** MongoDB Atlas
+- **Database:** MongoDB Atlas (10,000+ Transactions, Customers, AuditEvents, Users)

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getAuditTrail } from '../api';
 import { formatDate, statusBadge } from '../components/utils';
 
@@ -24,16 +24,25 @@ export default function AuditTrail({ selectedTxnId }) {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const handleSearch = async () => {
-    if (!txnId.trim()) return;
+  const handleSearch = async (overrideId) => {
+    const idToUse = (typeof overrideId === 'string' ? overrideId : txnId).trim();
+    if (!idToUse) return;
+    setTxnId(idToUse);
     setLoading(true); setSearched(true);
     try {
-      const r = await getAuditTrail(txnId.trim());
+      const r = await getAuditTrail(idToUse);
       setEvents(r.data.events || []);
     } catch (e) {
       setEvents([]);
     } finally { setLoading(false); }
   };
+
+  useEffect(() => {
+    if (selectedTxnId) {
+      setTxnId(selectedTxnId);
+      handleSearch(selectedTxnId);
+    }
+  }, [selectedTxnId]);
 
   return (
     <div className="animate-in">
@@ -53,7 +62,7 @@ export default function AuditTrail({ selectedTxnId }) {
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
             />
           </div>
-          <button className="btn btn-primary" onClick={handleSearch} disabled={loading}>
+          <button className="btn btn-primary" onClick={() => handleSearch()} disabled={loading}>
             {loading ? <><div className="spinner" /> Loading...</> : 'Load Audit Trail'}
           </button>
         </div>
@@ -61,10 +70,29 @@ export default function AuditTrail({ selectedTxnId }) {
 
       {loading && <div className="loader"><div className="spinner" /><span>Loading immutable audit events...</span></div>}
 
+      {!loading && !searched && (
+        <div className="empty-state">
+          <p style={{ fontWeight: 700, marginBottom: 6 }}>Select or enter a Transaction ID to inspect its cryptographic audit trail</p>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>Click any sample transaction to view historical actor telemetry:</p>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {['TXN001741', 'TXN000001', 'TXN000004'].map(id => (
+              <button
+                key={id}
+                className="btn btn-outline btn-sm"
+                style={{ fontSize: 11.5, padding: '4px 12px', fontFamily: 'var(--font-mono)' }}
+                onClick={() => handleSearch(id)}
+              >
+                ✦ Inspect {id}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {!loading && searched && events.length === 0 && (
         <div className="empty-state">
           <p>No audit events recorded for this transaction yet</p>
-          <p style={{ fontSize: 12, marginTop: 4 }}>Execute an autonomous recovery to generate event telemetry</p>
+          <p style={{ fontSize: 12, marginTop: 4 }}>Execute an autonomous recovery from the Decision Engine to generate event telemetry</p>
         </div>
       )}
 

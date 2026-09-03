@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { runAgentRecovery, analyzeRecovery } from '../api';
 import { formatINR, formatDate, statusBadge, failureLabel, ProbBar } from '../components/utils';
 import RazorpayCheckoutModal from '../components/RazorpayCheckoutModal';
@@ -12,16 +12,25 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [error, setError] = useState('');
 
-  const handleAnalyze = async () => {
-    if (!txnInput.trim()) return;
+  const handleAnalyze = async (overrideId) => {
+    const idToUse = (typeof overrideId === 'string' ? overrideId : txnInput).trim();
+    if (!idToUse) return;
+    setTxnInput(idToUse);
     setLoading(true); setError(''); setAnalysis(null); setAgentResult(null);
     try {
-      const r = await analyzeRecovery(txnInput.trim());
+      const r = await analyzeRecovery(idToUse);
       setAnalysis(r.data);
     } catch (e) {
       setError(e.response?.data?.error || e.message);
     } finally { setLoading(false); }
   };
+
+  useEffect(() => {
+    if (selectedTxnId) {
+      setTxnInput(selectedTxnId);
+      handleAnalyze(selectedTxnId);
+    }
+  }, [selectedTxnId]);
 
   const handleRunAgent = async () => {
     if (!txnInput.trim()) return;
@@ -288,8 +297,24 @@ export default function AIDecisionView({ selectedTxnId, setSelectedTxnId, onNavi
 
       {!txn && !loading && (
         <div className="empty-state">
-          <p>Enter a Transaction ID above to see the full AI decision breakdown</p>
-          <p style={{ fontSize: 12, marginTop: 8 }} className="mono">Try: TXN000001, TXN001741, TXN000004</p>
+          <p style={{ fontWeight: 700, marginBottom: 6 }}>Enter a Transaction ID above to see the full AI decision breakdown</p>
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>Or select a benchmark scenario to run instant live telemetry:</p>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[
+              { id: 'TXN001741', label: 'TXN001741 (Bank Timeout · 74.7% Prob)' },
+              { id: 'TXN000001', label: 'TXN000001 (3DS Network Drop)' },
+              { id: 'TXN000004', label: 'TXN000004 (High-Ticket > ₹5,000)' }
+            ].map(item => (
+              <button
+                key={item.id}
+                className="btn btn-outline btn-sm"
+                style={{ fontSize: 11.5, padding: '4px 10px', fontFamily: 'var(--font-mono)' }}
+                onClick={() => handleAnalyze(item.id)}
+              >
+                ✦ {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

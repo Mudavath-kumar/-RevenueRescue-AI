@@ -265,10 +265,12 @@ export default function HomeHero({ onNavigate }) {
         className="hero-video-wrapper"
         style={{
           position: 'absolute',
-          top: '300px',
-          inset: 'auto 0 0 0',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           width: '100%',
-          height: 'calc(100% - 300px)',
+          height: '100%',
           overflow: 'hidden',
           zIndex: 0,
           pointerEvents: 'none'

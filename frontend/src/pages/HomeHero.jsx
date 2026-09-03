@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const OPERATIONAL_STEPS = [
   {
@@ -201,6 +201,8 @@ export default function HomeHero({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('Overview');
   const [monthlyFailedGmv, setMonthlyFailedGmv] = useState(25); // In Lakhs
   const [avgTicket, setAvgTicket] = useState(2500); // In Rupees
+  const [videoOpacity, setVideoOpacity] = useState(0);
+  const videoRef = useRef(null);
 
   // Live ROI Calculations
   const gmvRupees = monthlyFailedGmv * 100000;
@@ -210,43 +212,111 @@ export default function HomeHero({ onNavigate }) {
   const annualIncremental = incrementalRevenue * 12;
   const savedInterventionFees = Math.round((gmvRupees / avgTicket) * 0.45 * 25); // fees saved from not retrying hopeless txns
 
+  // Custom Fade-In / Fade-Out Video Looping with requestAnimationFrame
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let animationFrameId;
+    const fadeDuration = 0.5; // 0.5s fade in / fade out
+
+    const checkTime = () => {
+      if (video.duration) {
+        const { currentTime, duration } = video;
+        if (currentTime < fadeDuration) {
+          // Fade in over 0.5s at the start (0 to 1)
+          setVideoOpacity(Math.min(1, currentTime / fadeDuration));
+        } else if (currentTime > duration - fadeDuration) {
+          // Fade out over 0.5s before the end (1 to 0)
+          const remaining = duration - currentTime;
+          setVideoOpacity(Math.max(0, remaining / fadeDuration));
+        } else {
+          setVideoOpacity(1);
+        }
+      }
+      animationFrameId = requestAnimationFrame(checkTime);
+    };
+
+    const handleEnded = () => {
+      setVideoOpacity(0);
+      setTimeout(() => {
+        if (video) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      }, 100);
+    };
+
+    video.addEventListener('ended', handleEnded);
+    animationFrameId = requestAnimationFrame(checkTime);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      if (video) {
+        video.removeEventListener('ended', handleEnded);
+      }
+    };
+  }, []);
+
   return (
     <div className="landing-hero-container">
-      {/* Background Video with Enhanced Clarity */}
-      <div className="hero-video-wrapper">
+      {/* Cinematic Looping Video Background with Custom Fade Transitions */}
+      <div
+        className="hero-video-wrapper"
+        style={{
+          position: 'absolute',
+          top: '300px',
+          inset: 'auto 0 0 0',
+          width: '100%',
+          height: 'calc(100% - 300px)',
+          overflow: 'hidden',
+          zIndex: 0,
+          pointerEvents: 'none'
+        }}
+      >
         <video
+          ref={videoRef}
           autoPlay
-          loop
           muted
           playsInline
           className="hero-background-video"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260319_015952_e1deeb12-8fb7-4071-a42a-60779fc64ab6.mp4"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: videoOpacity,
+            transition: 'opacity 0.1s linear'
+          }}
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4"
         />
-        <div className="hero-video-overlay" />
+        {/* Gradient overlays: from-background via-transparent to-background */}
+        <div className="hero-video-gradient-overlay" />
       </div>
 
       {/* Hero Interactive Foreground Content */}
       <div className="hero-content-wrapper">
         {/* 1. Top Innovation Badge */}
-        <div className="hero-badge animate-in">
+        <div className="hero-badge animate-fade-rise">
           <span className="hero-badge-sparkle">✦</span>
           <span>Now with Gemini 2.5 & 83.36% ML Model</span>
           <span className="hero-badge-pill">v2.0</span>
         </div>
 
         {/* 2. Editorial Headline with Instrument Serif Italic */}
-        <h1 className="hero-headline animate-in">
+        <h1 className="hero-headline animate-fade-rise">
           The Future of <span className="italic-serif">Smarter</span> Revenue Recovery
         </h1>
 
         {/* 3. Subheadline */}
-        <p className="hero-subheadline animate-in">
+        <p className="hero-subheadline animate-fade-rise-delay">
           Automate payment failure recovery with intelligent AI agents that diagnose root causes, 
           predict recovery probabilities, and execute policy-gated interventions—winning back revenue automatically.
         </p>
 
         {/* 4. Action Buttons */}
-        <div className="hero-cta-group animate-in">
+        <div className="hero-cta-group animate-fade-rise-delay-2">
           <button
             className="btn hero-primary-btn"
             onClick={() => onNavigate('ai_decision')}

@@ -212,7 +212,7 @@ export default function HomeHero({ onNavigate }) {
   const annualIncremental = incrementalRevenue * 12;
   const savedInterventionFees = Math.round((gmvRupees / avgTicket) * 0.45 * 25); // fees saved from not retrying hopeless txns
 
-  // Custom Fade-In / Fade-Out Video Looping with requestAnimationFrame
+  // Custom Fade-In / Fade-Out Video Looping with requestAnimationFrame (Direct DOM manipulation for 60fps smoothness)
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -221,24 +221,24 @@ export default function HomeHero({ onNavigate }) {
     const fadeDuration = 0.5; // 0.5s fade in / fade out
 
     const checkTime = () => {
-      if (video.duration) {
+      if (video.duration && !isNaN(video.duration)) {
         const { currentTime, duration } = video;
         if (currentTime < fadeDuration) {
           // Fade in over 0.5s at the start (0 to 1)
-          setVideoOpacity(Math.min(1, currentTime / fadeDuration));
+          video.style.opacity = String(Math.min(1, Math.max(0.1, currentTime / fadeDuration)));
         } else if (currentTime > duration - fadeDuration) {
           // Fade out over 0.5s before the end (1 to 0)
           const remaining = duration - currentTime;
-          setVideoOpacity(Math.max(0, remaining / fadeDuration));
+          video.style.opacity = String(Math.max(0, remaining / fadeDuration));
         } else {
-          setVideoOpacity(1);
+          video.style.opacity = '1';
         }
       }
       animationFrameId = requestAnimationFrame(checkTime);
     };
 
     const handleEnded = () => {
-      setVideoOpacity(0);
+      if (video) video.style.opacity = '0';
       setTimeout(() => {
         if (video) {
           video.currentTime = 0;
@@ -260,17 +260,16 @@ export default function HomeHero({ onNavigate }) {
 
   return (
     <div className="landing-hero-container">
-      {/* Cinematic Looping Video Background with Custom Fade Transitions */}
+      {/* Fullscreen Edge-to-Edge Cinematic Video Background */}
       <div
         className="hero-video-wrapper"
         style={{
           position: 'absolute',
           top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          width: '100%',
-          height: '100%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100vw',
+          height: 'min(100vh, 960px)',
           overflow: 'hidden',
           zIndex: 0,
           pointerEvents: 'none'
@@ -284,16 +283,18 @@ export default function HomeHero({ onNavigate }) {
           className="hero-background-video"
           style={{
             position: 'absolute',
-            inset: 0,
+            top: 0,
+            left: 0,
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            opacity: videoOpacity,
-            transition: 'opacity 0.1s linear'
+            objectPosition: 'center center',
+            opacity: 1,
+            filter: 'contrast(1.05) saturate(1.1)'
           }}
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4"
         />
-        {/* Gradient overlays: from-background via-transparent to-background */}
+        {/* Seamless edge and bottom gradient overlay */}
         <div className="hero-video-gradient-overlay" />
       </div>
 

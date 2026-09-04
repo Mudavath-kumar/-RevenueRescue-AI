@@ -171,32 +171,47 @@ export default function HeaderNav({ activePage, onNavigate }) {
               Launch Engine
             </button>
 
-            {/* Mobile Hamburger Toggle Button */}
+            {/* Modern Animated Toggle Button */}
             <button
-              className="mobile-menu-btn"
+              className={`modern-menu-toggle ${mobileMenuOpen ? 'is-open' : ''}`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation Menu"
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? '✕' : '☰'}
+              <div className="toggle-morph-icon">
+                <span className="morph-bar bar-1" />
+                <span className="morph-bar bar-2" />
+              </div>
+              <span className="toggle-chip-text">
+                {mobileMenuOpen ? 'Close' : 'Menu'}
+              </span>
             </button>
           </div>
         </div>
 
-        {/* Mobile Slide-Down Navigation Menu */}
+        {/* Modern Cool Floating Glassmorphic Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="mobile-nav-drawer animate-in">
+          <div className="modern-nav-drawer animate-drawer-slide">
             {/* User Profile in Drawer if Logged In */}
             {isAuthenticated ? (
-              <div className="mobile-user-card">
-                <div className="user-avatar-badge">
+              <div className="modern-drawer-user-card">
+                <div className="modern-avatar-badge">
                   {user.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 800, fontSize: 13, color: 'var(--text-primary)' }}>{user.name}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{user.email} • <span style={{ textTransform: 'capitalize' }}>{user.role}</span></div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 800, fontSize: 13.5, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
+                    {user.name}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 150 }}>
+                      {user.email}
+                    </span>
+                    <span>•</span>
+                    <span className="modern-role-pill">{user.role}</span>
+                  </div>
                 </div>
                 <button
-                  className="btn btn-outline btn-sm"
+                  className="modern-drawer-signout-btn"
                   onClick={() => { logout(); setMobileMenuOpen(false); }}
                 >
                   Sign Out
@@ -204,45 +219,50 @@ export default function HeaderNav({ activePage, onNavigate }) {
               </div>
             ) : (
               <button
-                className="btn btn-outline"
-                style={{ width: '100%', padding: '10px' }}
+                className="modern-drawer-auth-btn"
                 onClick={() => { setMobileMenuOpen(false); setAuthModalOpen(true); }}
               >
-                Sign In / Create Account
+                <span>Sign In / Create Account</span>
+                <span className="drawer-auth-arrow">→</span>
               </button>
             )}
 
-            <div className="mobile-nav-grid">
+            {/* Navigation Grid of Modern Tactile Cards */}
+            <div className="modern-drawer-nav-grid">
               {NAV_TABS.map((tab) => {
                 const isActive = activePage === tab.id;
                 return (
                   <button
                     key={tab.id}
-                    className={`mobile-nav-item ${isActive ? 'active' : ''}`}
+                    className={`modern-drawer-tile ${isActive ? 'active' : ''}`}
                     onClick={() => handleNavClick(tab.id)}
                   >
-                    <span className="mobile-nav-icon">{NavIcons[tab.id]}</span>
-                    <span className="mobile-nav-label">{tab.label}</span>
+                    <div className="drawer-tile-icon-box">
+                      {NavIcons[tab.id]}
+                    </div>
+                    <span className="drawer-tile-label">{tab.label}</span>
                     {tab.id === 'exceptions' && exceptionCount > 0 && (
-                      <span className="nav-alert-pill">{exceptionCount}</span>
+                      <span className="drawer-alert-badge">{exceptionCount}</span>
                     )}
+                    <span className="drawer-tile-chevron">›</span>
                   </button>
                 );
               })}
             </div>
 
             {/* Mobile Action Bar inside Drawer */}
-            <div className="mobile-drawer-footer">
-              <div className="status-indicator-pill" style={{ justifyContent: 'center' }}>
+            <div className="modern-drawer-footer">
+              <div className="modern-drawer-status-pill">
                 <span className="pulse-dot" />
-                <span className="status-label">Engine Active (10k Ledger Sync)</span>
+                <span style={{ fontWeight: 700, fontSize: 11.5, color: '#059669' }}>Engine Active</span>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>• 10k Ledger Telemetry</span>
               </div>
               <button
-                className="btn btn-primary"
-                style={{ width: '100%', padding: '12px', borderRadius: '10px' }}
+                className="btn hero-primary-btn modern-drawer-cta-btn"
                 onClick={() => handleNavClick('ai_decision')}
               >
-                Launch Recovery Engine →
+                <span>Launch Recovery Engine</span>
+                <span className="btn-arrow">→</span>
               </button>
             </div>
           </div>

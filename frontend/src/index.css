@@ -284,103 +284,363 @@ code, pre, .mono {
   white-space: nowrap;
 }
 
-.mobile-menu-btn {
+/* ── Modern Animated Menu Toggle Pill ────────────────────────── */
+.modern-menu-toggle {
   display: none;
-  background: #F1F5F9;
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  font-size: 16px;
-  padding: 7px 11px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: inherit;
   align-items: center;
-  justify-content: center;
-  line-height: 1;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px 6px 11px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.02);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+  user-select: none;
+}
+
+.modern-menu-toggle:hover {
+  background: #FFFFFF;
+  border-color: var(--border-bright);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.modern-menu-toggle:active {
+  transform: scale(0.95);
+}
+
+.modern-menu-toggle.is-open {
+  background: #0F172A;
+  border-color: #0F172A;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.22);
+}
+
+/* Animated Morphing Bars */
+.toggle-morph-icon {
+  width: 17px;
+  height: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   flex-shrink: 0;
 }
 
-.mobile-menu-btn:hover {
-  background: #E2E8F0;
+.morph-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #0F172A;
+  border-radius: 2px;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s ease,
+              width 0.2s ease;
+  transform-origin: center;
 }
 
-/* Mobile Slide-Down Drawer */
-.mobile-nav-drawer {
+.morph-bar.bar-1 {
+  width: 100%;
+}
+
+.morph-bar.bar-2 {
+  width: 60%;
+  margin-left: auto;
+}
+
+.modern-menu-toggle:hover .morph-bar.bar-2 {
+  width: 100%;
+}
+
+/* When Menu is Open: morph into sleek X */
+.modern-menu-toggle.is-open .morph-bar {
   background: #FFFFFF;
-  border-bottom: 1px solid var(--border);
-  padding: 16px 20px 20px;
-  box-shadow: var(--shadow-lg);
+}
+
+.modern-menu-toggle.is-open .morph-bar.bar-1 {
+  transform: translateY(5px) rotate(45deg);
+}
+
+.modern-menu-toggle.is-open .morph-bar.bar-2 {
+  width: 100%;
+  transform: translateY(-5px) rotate(-45deg);
+}
+
+.toggle-chip-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.modern-menu-toggle.is-open .toggle-chip-text {
+  color: #FFFFFF;
+}
+
+/* Backward compatibility */
+.mobile-menu-btn {
+  display: none;
+}
+
+/* ── Modern Cool Floating Glassmorphic Navigation Drawer ──────── */
+.modern-nav-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 0 0 24px 24px;
+  padding: 18px 20px 24px;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.04);
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 14px;
   z-index: 101;
+  box-sizing: border-box;
 }
 
-.mobile-nav-grid {
+@keyframes drawerSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-drawer-slide {
+  animation: drawerSlide 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Modern User Card inside Drawer */
+.modern-drawer-user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-xs);
+}
+
+.modern-avatar-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0F172A 0%, #2563EB 100%);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.modern-role-pill {
+  text-transform: capitalize;
+  font-weight: 700;
+  color: var(--accent-blue);
+  background: #EFF6FF;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.modern-drawer-signout-btn {
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.modern-drawer-signout-btn:hover {
+  background: #FFF1F2;
+  border-color: #FECDD3;
+  color: #E11D48;
+}
+
+.modern-drawer-auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 18px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modern-drawer-auth-btn:hover {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-color: #0F172A;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.drawer-auth-arrow {
+  transition: transform 0.2s ease;
+}
+
+.modern-drawer-auth-btn:hover .drawer-auth-arrow {
+  transform: translateX(3px);
+}
+
+/* Modern Drawer Nav Grid */
+.modern-drawer-nav-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
-.mobile-nav-item {
+.modern-drawer-tile {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
-  background: #F8FAFC;
+  padding: 11px 12px;
+  background: #FFFFFF;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 700;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.02);
+  position: relative;
 }
 
-.mobile-nav-item:hover {
-  background: #F1F5F9;
+.modern-drawer-tile:hover {
+  background: #F8FAFC;
   color: var(--text-primary);
   border-color: var(--border-bright);
+  transform: translateY(-1px);
 }
 
-.mobile-nav-item.active {
+.modern-drawer-tile.active {
   background: #0F172A;
   color: #FFFFFF;
   border-color: #0F172A;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.15);
 }
 
-.mobile-nav-icon {
+.drawer-tile-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #F1F5F9;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.18s ease;
 }
 
-.mobile-nav-item.active .mobile-nav-icon {
+.modern-drawer-tile:hover .drawer-tile-icon-box {
+  background: #E2E8F0;
+  color: var(--accent-blue);
+}
+
+.modern-drawer-tile.active .drawer-tile-icon-box {
+  background: rgba(255, 255, 255, 0.15);
   color: #60A5FA;
 }
 
-.mobile-nav-label {
+.drawer-tile-label {
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mobile-drawer-footer {
+.drawer-alert-badge {
+  background: var(--accent-red);
+  color: #FFFFFF;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.drawer-tile-chevron {
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: transform 0.15s ease;
+}
+
+.modern-drawer-tile:hover .drawer-tile-chevron {
+  transform: translateX(2px);
+  color: var(--text-primary);
+}
+
+.modern-drawer-tile.active .drawer-tile-chevron {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Modern Drawer Footer */
+.modern-drawer-footer {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid #F1F5F9;
+}
+
+.modern-drawer-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  justify-content: center;
+}
+
+.modern-drawer-cta-btn {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 12px;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.2);
 }
 
 .mobile-drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   z-index: 99;
 }
 
@@ -2507,7 +2767,7 @@ input:focus, select:focus {
   .desktop-nav { display: none; }
   .header-status-desktop { display: none; }
   .header-cta-desktop { display: none; }
-  .mobile-menu-btn { display: inline-flex; }
+  .mobile-menu-btn, .modern-menu-toggle { display: inline-flex; }
   .card-grid-4 { grid-template-columns: repeat(2, 1fr); }
   .card-grid-3 { grid-template-columns: repeat(2, 1fr); }
   .home-stats-strip { grid-template-columns: repeat(2, 1fr); }
@@ -2535,7 +2795,7 @@ input:focus, select:focus {
   .brand-badge { display: none; }
   .brand-name { font-size: 15px; }
   .top-nav-container { padding: 8px 12px; }
-  .mobile-nav-grid { grid-template-columns: 1fr; }
+  .mobile-nav-grid, .modern-drawer-nav-grid { grid-template-columns: 1fr; }
   .home-stats-strip { grid-template-columns: 1fr; gap: 12px; margin: 32px auto 40px; }
   .home-steps-grid { grid-template-columns: 1fr; }
   .home-capabilities-grid { grid-template-columns: 1fr; }

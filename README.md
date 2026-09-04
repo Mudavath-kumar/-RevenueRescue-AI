@@ -303,6 +303,5 @@ Visit the application at: **`http://localhost:3000`**
 ## 👨‍💻 Project Information & Submission
 
 - **Candidate**: Mudavath Kumar
-- **Submission Track**: Tutedude's Web Dev Hackathon 1.0 / Razorpay Engineering Assignment
 - **Live Demo Deployment**: [revenue-rescue-ai-omega.vercel.app](https://revenue-rescue-ai-omega.vercel.app/)
 - **Repository**: [github.com/Mudavath-kumar/-RevenueRescue-AI](https://github.com/Mudavath-kumar/-RevenueRescue-AI)
